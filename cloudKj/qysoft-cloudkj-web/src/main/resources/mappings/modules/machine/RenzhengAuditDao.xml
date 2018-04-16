@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.machine.dao.RenzhengAuditDao">
+    
+	<sql id="renzhengAuditColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.true_name AS "trueName",
+		a.id_card AS "idCard",
+		a.school_name AS "schoolName",
+		a.subject_name AS "subjectName",
+		a.enrollment_year AS "enrollmentYear",
+		a.school_year AS "schoolYear",
+		a.education AS "education",
+		a.front_card_img AS "frontCardImg",
+		a.verso_card_img AS "versoCardImg",
+		a.student_img AS "studentImg",
+		a.status AS "status",
+		a.type AS "type",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="renzhengAuditJoins">
+	</sql>
+    
+	<select id="get" resultType="RenzhengAudit">
+		SELECT 
+			<include refid="renzhengAuditColumns"/>
+		FROM renzheng_audit a
+		<include refid="renzhengAuditJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getByUserName" resultType="RenzhengAudit">
+		SELECT
+		*
+		FROM renzheng_audit
+		WHERE user_name = #{userName}
+	</select>
+	
+	<select id="findList" resultType="RenzhengAudit">
+		SELECT 
+
+			<include refid="renzhengAuditColumns"/>
+		FROM renzheng_audit a
+		<include refid="renzhengAuditJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name = #{userName}
+			</if>
+			<if test="trueName != null and trueName != ''">
+				AND a.true_name = #{trueName}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="idCard != null and idCard != ''">
+				AND a.id_card = #{idCard}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="RenzhengAudit">
+		SELECT 
+			<include refid="renzhengAuditColumns"/>
+		FROM renzheng_audit a
+		<include refid="renzhengAuditJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO renzheng_audit(
+			id,
+			user_name,
+			true_name,
+			id_card,
+			school_name,
+			subject_name,
+			enrollment_year,
+			school_year,
+			education,
+			front_card_img,
+			verso_card_img,
+			student_img,
+			status,
+			type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{trueName},
+			#{idCard},
+			#{schoolName},
+			#{subjectName},
+			#{enrollmentYear},
+			#{schoolYear},
+			#{education},
+			#{frontCardImg},
+			#{versoCardImg},
+			#{studentImg},
+			#{status},
+			#{type},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE renzheng_audit SET 	
+			user_name = #{userName},
+			true_name = #{trueName},
+			id_card = #{idCard},
+			school_name = #{schoolName},
+			subject_name = #{subjectName},
+			enrollment_year = #{enrollmentYear},
+			school_year = #{schoolYear},
+			education = #{education},
+			front_card_img = #{frontCardImg},
+			verso_card_img = #{versoCardImg},
+			student_img = #{studentImg},
+			status = #{status},
+			type = #{type},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateStatus">
+		UPDATE renzheng_audit SET
+		status = #{status},
+		remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE renzheng_audit SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

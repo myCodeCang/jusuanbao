@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>实名认证</title>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <script src="../js/common.js"></script>
+</head>
+
+<body>
+<header class="aui-bar aui-bar-nav home">
+    <a class="aui-pull-left back" href="#">
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a>
+    <div class="aui-title">实名认证</div>
+</header>
+<div class="height-one"></div>
+<style>
+    .shangchuan [class*=aui-col-]{position: relative;}
+    .shangchuan [class*=aui-col-] .ipt{position: absolute;top:0;left:0;width:100%;height:100%;opacity:0;z-index:10;}
+</style>
+<div class="aui-content shangchuan aui-margin-t-10">
+    <div class="aui-grid">
+        <form name="form" id="formSave1" action="" method="POST" enctype="multipart/form-data">
+            <div class="aui-row">
+                <div class="aui-col-xs-6" id="frontCardImg">
+                    <img id="imghead1" src="../image/zhengmian.jpg"/>
+                </div>
+                <div class="aui-col-xs-6">
+                    <input onchange="doUpload(1)" id="file1" accept="image/*" type="file" name="file" class="ipt">
+                    <input type="hidden" name="id">
+                    <input type="hidden" id="url1">
+                    <img src="../image/zhengmian1.jpg"/>
+                </div>
+            </div>
+        </form>
+        <form name="form" id="formSave2" action="" method="POST" enctype="multipart/form-data">
+            <div class="aui-row">
+                <div class="aui-col-xs-6" id="versoCardImg">
+                    <img id="imghead2" src="../image/fanmian.jpg"/>
+                </div>
+                <div class="aui-col-xs-6">
+                    <input onchange="doUpload(2)" id="file2" accept="image/*" type="file" name="file" class="ipt">
+                    <input type="hidden" id="url2">
+                    <img src="../image/fanmian1.jpg"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="aui-content aui-margin-t-10 renzheng-xinxi">
+    <ul class="aui-list">
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    姓名：
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="请输入您的真实姓名" name="trueName">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    身份证号：
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="请输入您的身份证号码" name="idCard">
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="aui-content register-but">
+    <div class="aui-btn aui-btn-block btn-login aui-margin-t-15 aui-margin-b-15" onclick="complete()">提 交</div>
+</div>
+</body>
+<script src="../js/jquery.min.js"></script>
+<script type="text/javascript">
+    var tjFlag = false;
+    qySoftInit("../../static/qyScript/web/");
+    //apicloud 准备完成
+
+    layui.use(['qyWin', 'qyForm', 'layer'], initpage);
+
+
+    function initpage() {
+
+        var qyWin = layui.qyWin;
+        var qyForm = layui.qyForm;
+        loadData();
+    }
+
+    function loadData() {
+        layui.qyForm.qyajax("/f/app/machine/getRenZheng", {}, function (data) {
+            if (data.data.id) {
+                $("input[name='id']").val(data.data.id);
+                if (data.data.type != 2) {
+                    return;
+                }
+                layui.qyWin.toast("您的审核已被驳回,驳回原因：" + data.data.remarks);
+                $("#frontCardImg").html('<img src="' + CONS_IMG_URL + data.data.frontCardImg + '">');
+                $("#url1").val(data.data.frontCardImg);
+                $("#versoCardImg").html('<img src="' + CONS_IMG_URL + data.data.versoCardImg + '">');
+                $("#url2").val(data.data.versoCardImg);
+                $("input[name='trueName']").val(data.data.trueName);
+                $("input[name='idCard']").val(data.data.idCard);
+            }
+        });
+    }
+
+    function complete() {
+        var id = $("input[name='id']").val();
+        var idCardImg1 = $("#url1").val();
+        var idCardImg2 = $("#url2").val();
+        var trueName = $("input[name='trueName']").val();
+        var idCard = $("input[name='idCard']").val();
+        if (!idCardImg1) {
+            layui.qyWin.toast("请上传您的身份证正面照!");
+            return;
+        }
+        if (!idCardImg2) {
+            layui.qyWin.toast("请上传您的身份证反面照!");
+            return;
+        }
+        if (!trueName) {
+            layui.qyWin.toast("请输入您的真实姓名!");
+            return;
+        }
+        if (tjFlag) {
+            return;
+        }
+        if (!idCard) {
+            layui.qyWin.toast("请输入您的身份证号码!");
+            return;
+        }
+        tjFlag = true;
+        layui.qyForm.qyajax("/f/app/machine/idCardVerify", {
+            idCard: idCard
+        }, function (data) {
+            var data = {
+                id: id,
+                frontCardImg: idCardImg1,
+                versoCardImg: idCardImg2,
+                trueName: trueName,
+                idCard: idCard
+            }
+
+            layui.qyForm.qyajax("/f/app/machine/secRenZheng", data, function (data) {
+                layui.qyWin.toast("恭喜您提交成功,请耐心等待审核!");
+                setTimeout("location.href=document.referrer;", 2000);
+
+            });
+        }, function (ret) {
+            tjFlag = false;
+        });
+
+    }
+
+    function doUpload(id) {
+        var formData = new FormData($("#formSave" + id)[0]);
+        if (!$('#file' + id).val()) {
+            return;
+        }
+        ;
+        $.ajax({
+            url: CONS_AJAX_URL + '/f/machine/upload',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $("#imghead" + id).attr("src", CONS_AJAX_URL + data.path);
+                $("#url" + id).val(data.path);
+            },
+            error: function (data) {
+                alert("上传图片失败");
+            }
+        });
+
+    }
+</script>
+
+</html>

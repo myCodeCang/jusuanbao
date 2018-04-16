@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.machine.dao.BtcBurseDao">
+    
+	<sql id="btcBurseColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.bank_account AS "bankAccount",
+		a.message AS "message",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		c.true_name AS "trueName"
+	</sql>
+	
+	<sql id="btcBurseJoins">
+		LEFT JOIN user_userinfo c ON a.user_name = c.user_name
+	</sql>
+    
+	<select id="get" resultType="BtcBurse">
+		SELECT 
+			<include refid="btcBurseColumns"/>
+		FROM btc_burse a
+		<include refid="btcBurseJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getByNameAndBankAccount" resultType="BtcBurse">
+		SELECT
+		<include refid="btcBurseColumns"/>
+		FROM btc_burse a
+		<include refid="btcBurseJoins"/>
+		WHERE a.user_name = #{userName}
+			AND a.bank_account = #{bankAccount}
+		Limit 1
+	</select>
+
+	<select id="findList" resultType="BtcBurse">
+		SELECT 
+
+			<include refid="btcBurseColumns"/>
+		FROM btc_burse a
+		<include refid="btcBurseJoins"/>
+		<where>
+
+			<if test="userName != null and userName !='' ">
+				a.user_name = #{userName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BtcBurse">
+		SELECT 
+			<include refid="btcBurseColumns"/>
+		FROM btc_burse a
+		<include refid="btcBurseJoins"/>
+		<where>
+			<if test="userName != null and userName !='' ">
+				a.user_name = #{userName}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO btc_burse(
+			id,
+			user_name,
+			bank_account,
+			message,
+			status,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{bankAccount},
+			#{message},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE btc_burse SET 	
+			user_name = #{userName},
+			bank_account = #{bankAccount},
+			message = #{message},
+			status = #{status},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM btc_burse
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

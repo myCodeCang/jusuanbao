@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>比特币提现</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/aui/layer-mobile.css"/>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+</head>
+
+<body class="bg-gray">
+<header class="aui-bar aui-bar-nav home">
+    <a class="aui-pull-left aui-btn back" href="#">
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a>
+    <div class="aui-title">比特币提现</div>
+    <a href="btctxlist.html" class="aui-pull-right aui-font-size-14">明细</a>
+</header>
+<div class="height-one"></div>
+
+<div class="aui-content withdraw">
+    <p><span>比特币账户:</span>&nbsp;&nbsp;<span class="aui-text-danger"><span id="btcMoney"></span>&nbsp;BTC</span></p>
+    <ul class="aui-list aui-form-list">
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    提取账户：
+                </div>
+                <div class="aui-list-item-input">
+                    <select id="tpl-account">
+                        
+                    </select>
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    提取数量：
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="money" placeholder="请输入提取数量"  onKeyUp="amount(this)"  onchange="verifyAccount()">
+                </div>
+            </div>
+        </li>
+         <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    实际到账:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="realMoney" readonly placeholder="实际到账">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    密　　码：
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="password" id="password" placeholder="请输入密码">
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="blank_15"></div>
+<div class="blank_15"></div>
+<style>
+            .tieshi h3{color:#ff0000;}
+            .tieshi p{color:#ff0000;}
+        </style>
+        <div class="aui-content tieshi" >
+            <h3>贴士：</h3>
+            <p id = "">手续费&nbsp;:&nbsp;<span id="least"></span></p>
+            
+        </div>
+        <div class="aui-content withdraw-btn">
+    <div class="aui-btn aui-btn-block" onclick="towithdraw()">提现</div>
+</div>
+</body>
+<script type="text/html" id="temp-account">
+    {{each btcBurses}}
+        <option value="{{$value.id}}">{{$value.bankAccount,20 | stringSubFormat}}</option>
+    {{/each}}
+</script>
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    var btcMoney;
+    var btcPrice;
+    var txFlag = false;
+    var btcChargeOne;
+
+    //apicloud 准备完成
+        layui.use(['qyWin', 'qyForm', 'qyShop', 'layer','template'], initpage);
+
+    function initpage() {
+        loadData();
+        getAccounyList();
+    };
+
+    function getAccounyList(){
+        layui.qyForm.qyajax("/f/app/machine/getBtcPursetList",{},function(data){
+           if(data.btcBurses == ''){
+                layui.qyWin.toast("请先绑定BTC账户");
+                setTimeout(function(){
+                    layui.qyWin.win("my","my.html",{});
+                },1500);
+
+           }
+            btcChargeOne = data.btcChargeOne;
+            $("#least").html(btcChargeOne+"BTC");
+            var html = template("temp-account",data);
+            $("#tpl-account").html(html);
+
+        });
+    }
+
+    function loadData() {
+        layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function (data) {
+            $("#btcMoney").html(data.userinfo.money6);
+            btcMoney = data.userinfo.money6;
+
+        });
+    }
+
+    function verifyAccount() {
+
+        var money = $("#money").val();
+        if (!/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(money)) {
+            layui.qyWin.toast('数量输入错误');
+            return;
+        }
+        if(money < btcChargeOne){
+            layui.qyWin.toast("提现数量过低");
+            return;
+        }
+
+        $("#realMoney").val((money-btcChargeOne).toFixed(10));
+    }
+
+    //限制输入金额
+        function amount(th){
+            var regStrs = [
+                ['^0(\\d+)$', '$1'], //禁止录入整数部分两位以上，但首位为0
+                ['[^\\d\\.]+$', ''], //禁止录入任何非数字和点
+                ['\\.(\\d?)\\.+', '.$1'], //禁止录入两个以上的点
+                ['^(\\d+\\.\\d{10}).+', '$1'] //禁止录入小数点后两位以上
+            ];
+            for(var i=0; i<regStrs.length; i++){
+                var reg = new RegExp(regStrs[i][0]);
+                th.value = th.value.replace(reg, regStrs[i][1]);
+            }
+        }
+
+
+    function towithdraw() {
+        var account = $("#tpl-account").val();
+        var money = $("#money").val();
+        var password = $("#password").val();
+
+        if(!account){
+            layui.qyWin.toast('请先填写钱包账户');
+            return;
+        }
+        if(txFlag){
+            return;
+        }
+        if (!/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(money)) {
+            layui.qyWin.toast('数量输入错误');
+            return;
+        }
+        if (btcMoney < money) {
+            layui.qyWin.toast('BTC余额不足,无法提现');
+            return;
+        }
+        txFlag = true;
+        layui.layer.open({
+            content: '您确定要提现吗？'
+            , btn: ['确认', '取消']
+            , yes: function (index) {
+                layui.qyForm.qyajax("/f/app/machine/appbtcWithdraw", {
+                    account: account,
+                    money: money,
+                    password: password
+                }, function (data) {
+                    layui.qyWin.toast(data.info);
+                    setTimeout("layui.qyWin.closeWin(true)",2500);
+                    txFlag = false;
+                    initpage();
+                },function(err){
+                    initpage();
+                    txFlag = false;
+                });
+                layui.layer.close(index);
+            }
+        });
+
+
+    }
+</script>
+
+</html>

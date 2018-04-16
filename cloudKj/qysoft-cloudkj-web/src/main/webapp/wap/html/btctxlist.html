@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>BTC提现明细</title>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+	</head>
+	<body>
+		<header class="aui-bar aui-bar-nav home">
+			<a class="aui-pull-left aui-btn back"  href="#">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+			<div class="aui-title">BTC提现明细</div>
+		</header>
+		<div class="height-one"></div>
+		<div class="aui-content table-box bg-fff">
+		    <table>
+		        <thead>
+		            <th>金额</th>
+		            <th>状态</th>
+		            <th>时间</th>
+		            <th>操作</th>
+		        </thead>
+		        <tbody id="temp_MoneyList">
+
+
+		        </tbody>
+		    </table>
+		</div>
+		<div class="jiazai-box aui-content"></div>
+	</body>
+	<script  type="text/html" id="tpl_MoneyList">
+	    {{each page.list}}
+		            <tr>
+		                <td>{{$value.money}}</td>
+		                <td>{{$value.status == 0 ? "未处理" : $value.status == 1 ? "已同意" : "已驳回"}}</td>
+		                <td>{{$value.createDate|dateFormat}}</td>
+		                <td><a href="btctxdetail.html?txId={{$value.id}}" class="btn-hui">详情</a></td>
+		            </tr>
+			{{/each}}
+
+	</script>
+	<script type="text/javascript">
+			//框架初始化
+            qySoftInit("../../static/qyScript/web/");
+			//apicloud 准
+
+			layui.use(['qyWin','qyForm','template'], initpage);
+
+			function initpage(){
+				layui.qyForm.pageajax(loadData,{
+					"pageNo":"1",
+					"pageSize":"20"
+				});
+			}
+			function loadData(param,callback){
+
+				layui.qyForm.qyajax("/f/app/machine/findBtcWithdraw",param,function(data){
+				       var pageData = data.page;
+               var html = template('tpl_MoneyList', data);
+					   $("#temp_MoneyList").append(html);
+					   if(callback){
+						callback(pageData);
+					   }
+
+
+				});
+			}
+			//刷新页面方法, closeWin(true) 回调使用
+ 			function reload(){
+   				initpage();
+  			}
+	</script>
+</html>

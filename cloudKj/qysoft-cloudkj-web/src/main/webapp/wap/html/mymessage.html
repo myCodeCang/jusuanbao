@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>我的资料</title>
+	<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+	<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+	<style>
+		input.movetest {
+			text-align: right;
+			font-size: 0.6rem;
+			color: #999;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav home">
+		<a class="aui-pull-left aui-btn back" href="#">
+			<span class="aui-iconfont aui-icon-left"></span>
+		</a>
+		<div class="aui-title">我的资料</div>
+		<a class="aui-pull-right aui-btn" onclick="save()">保存</a>
+	</header>
+	<div class="height-one"></div>
+	<section class="aui-content personal-one">
+		<ul class="aui-list">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">会员名称</div>
+					<div class="aui-list-item-right" id="userName"></div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">会员昵称</div>
+					<div class="aui-list-item-right">
+						<input type="text" id="nickName" class="movetest">
+					</div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">真实姓名</div>
+					<div class="aui-list-item-right" id="trueName"></div>
+				</div>
+			</li>
+		</ul>
+		<ul class="aui-list aui-margin-t-10">
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">手机号</div>
+					<div class="aui-list-item-right" id="phoneNumber"></div>
+				</div>
+			</li>
+			<li class="aui-list-item">
+				<div class="aui-list-item-inner">
+					<div class="aui-list-item-title">注册时间</div>
+					<div class="aui-list-item-right" id="createDate"></div>
+				</div>
+			</li>
+		</ul>
+	</section>
+</body>
+
+<script type="text/javascript">
+	//框架初始化
+    qySoftInit("../../static/qyScript/web/");
+
+	//apicloud 准备完成
+
+	layui.use(['qyWin', 'qyForm', 'template'], initpage);
+
+
+	function initpage() {
+		var qyWin = layui.qyWin;
+
+		loadData();
+
+	}
+
+	function loadData() {
+		layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function(data) {
+			$("#userName").html(data.userinfo.userName);
+			$("#nickName").val(data.userinfo.userNicename);
+			$("#trueName").html(data.userinfo.trueName);
+			$("#phoneNumber").html(data.userinfo.mobile);
+			$("#createDate").html(data.userinfo.createDate);
+		});
+	}
+
+	function save() {
+		var nickName = $("#nickName").val();
+		layui.qyForm.qyajax("/f/app/userinfo/updateNickName", {nickName: nickName}, function(data) {
+					layui.qyWin.toast("恭喜您修改成功!");
+					setTimeout("layui.qyWin.closeWin(true)",1000);
+		});
+	}
+</script>
+
+</html>

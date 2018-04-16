@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>认证</title>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+	</head>
+	<body class="bg-gray">
+		<header class="aui-bar aui-bar-nav home">
+			<a class="aui-pull-left back" href="#">
+				<span class="aui-iconfont aui-icon-left"></span>
+			</a>
+			<div class="aui-title">认证</div>
+		</header>
+		<div class="height-one"></div>
+		<div class="aui-content change">
+			<span>选择您的认证渠道，填写您的认证信息</span>
+		</div>
+		<div class="aui-content change-one">
+			<div class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-6">
+						<a onclick="Jump('stu')">
+							<i class="studentrenzheng"></i>
+							<span>学生认证</span>
+						</a>
+					</div>
+					<div class="aui-col-xs-6">
+						<a onclick="Jump('sec')">
+							<i class="yonghurenzheng"></i>
+							<span>社会认证</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/jquery.min.js"></script>
+	<script type="text/javascript">
+        qySoftInit("../../static/qyScript/web/");
+        //apicloud 准备完成
+		layui.use(['qyWin','qyForm'], initpage);
+        function initpage(){
+            layui.qyForm.qyajax("/f/app/helpManage/reRenZheng",{}, function (data) {
+//                alert(JSON.stringify(data));
+                isRenZheng = data.renZhengStatus;
+            });
+        }
+        function Jump(val) {
+            layui.qyForm.qyajax("/f/app/helpManage/reRenZheng",{}, function (data) {
+                var isRenZheng = data.renZhengStatus;
+                var url="renzheng.html";
+                if(val == "sec"){
+                    url="shehuirenzheng.html";
+				}
+                if(isRenZheng=="2"){
+                    layui.qyWin.win("renzheng",url,"");
+                }else if(isRenZheng=="0"){
+                    layui.qyWin.toast("正在审核中,请勿重复提交!");
+                    return;
+                }else if(isRenZheng=="1"){
+                    layui.qyWin.toast("您已通过审核,请勿重复提交!");
+                    return;
+				}
+            });
+
+        }
+	</script>
+</html>

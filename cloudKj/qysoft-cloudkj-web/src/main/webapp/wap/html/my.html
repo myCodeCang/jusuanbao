@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>个人中心</title>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/aui/layer-mobile.css"/>
+    <script src="../js/jquery.min.js"></script>
+    <style media="screen">
+        #imgrotate {
+            transform-origin: 50% 50%;
+            transition: all 0.3s linear;
+        }
+    </style>
+
+</head>
+
+<body class="bg-gray">
+<div class="aui-content geren">
+    <img src="../image/my-bg.png"/>
+
+    <div class="touxiang">
+        <img id="userLogo" src=""/>
+        <p class="yonghuming"><a href="mymessage.html"><span style="color: white" id="niceName"></span></a></p>
+    </div>
+    <!-- <span class="shezhi"><img src="../image/pic-shezhi.png"/></span> -->
+    <div class="aui-content geren-qianbao">
+        <h3><span class="aui-pull-left">&nbsp;<img src="../image/pic-qianbao.png"/>&nbsp;<span>我的钱包</span></span><span
+                class="aui-pull-right"><a href="javascript:void(0)" onclick="toTX()">提现</a> / <a href="#"
+                                                                                                 class="aui-text-danger"
+                                                                                                 onclick="recharge()">充值</a>&nbsp;&nbsp;&nbsp;</span>
+        </h3>
+        <div class="aui-grid">
+            <div class="aui-row">
+                <div class="aui-col-xs-6">
+                    <span class="aui-text-danger" id="money"></span>
+                    <span>余额(元)</span>
+                </div>
+                <div class="aui-col-xs-6">
+                    <span id="powerMoney"></span>
+                    <span>电量(度)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="aui-content geren-menu">
+    <h3 class="aui-margin-b-10"><span>比特币余额</span>&nbsp;&nbsp;&nbsp;<span id="btcMoney"></span><img
+            src="../image/zhuanhuang.png" class="aui-pull-right" id="imgrotate" onclick="imgRotate()"/></h3>
+    <ul class="aui-list aui-list-in aui-margin-b-10">
+        <a href="" onclick="toRenzheng()">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-myzhujuan"><img src="../image/pic-renzheng.png"/></i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">实名认证</div>
+                    <div class="aui-list-item-right" id="renStatus"></div>
+                </div>
+            </li>
+        </a>
+        <a href="mymessage.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-dingdan">
+                        <img src="../image/pic-ziliao.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">我的资料</div>
+                </div>
+            </li>
+        </a>
+    </ul>
+    <ul class="aui-list aui-list-in aui-margin-b-10">
+        <a href="gaipassword.html?flag=updatePassword">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-mima.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">登录密码修改</div>
+                </div>
+            </li>
+        </a>
+        <a href="xiugaiPayPass.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-zhifu.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">支付密码修改</div>
+                </div>
+            </li>
+        </a>
+        <a href="" onclick="toAddCard()">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-card.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">银行卡管理</div>
+                </div>
+            </li>
+        </a>
+    </ul>
+    <ul class="aui-list aui-list-in aui-margin-b-10">
+        <a href="javascript:void(0)" onclick="toBtcMoney()">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-bitebi.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">比特币钱包</div>
+                </div>
+            </li>
+        </a>
+        <a href="zichan.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-mingxi.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">资金明细</div>
+                </div>
+            </li>
+        </a>
+        <a href="txlist.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-tixian.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">提现明细</div>
+                </div>
+            </li>
+        </a>
+        <a href="dianlianglog.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-label-icon">
+                    <i class="pic-ziliao">
+                        <img src="../image/pic-dianliang.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">电量明细</div>
+                </div>
+            </li>
+        </a>
+    </ul>
+</div>
+<div class="aui-content geren-btn" onclick="loginOut()">
+    <div class="aui-btn aui-btn-block">退 出</div>
+</div>
+<div class="blank_15"></div>
+<div class="blank_15"></div>
+<div class="blank_15"></div>
+<div class="blank_15"></div>
+<div class="blank_15"></div>
+<footer class="aui-bar aui-bar-tab ju-footer">
+    <div class="aui-bar-tab-item" onclick="openWin('index')">
+        <i class="ico-home"></i>
+        <div class="aui-bar-tab-label">首页</div>
+    </div>
+    <div class="aui-bar-tab-item" onclick="openKeFu()">
+        <i class="ico-kefu"></i>
+        <div class="aui-bar-tab-label">客服</div>
+    </div>
+    <div class="aui-bar-tab-item heyue-bot" onclick="openWin('contract')">
+        <i class="ico-heyue"></i>
+        <div class="aui-bar-tab-label">合约</div>
+    </div>
+    <div class="aui-bar-tab-item" onclick="openWin('earnings')">
+        <i class="ico-shouyi"></i>
+        <div class="aui-bar-tab-label">收益</div>
+    </div>
+    <div class="aui-bar-tab-item  active " onclick="openWin('my')">
+        <i class="ico-my-one"></i>
+        <div class="aui-bar-tab-label">我的</div>
+    </div>
+</footer>
+</body>
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    //apicloud 准备完成
+    var btcPrice = 1;
+    var btcMoney;
+    var renStatus;
+
+    layui.use(['qyWin', 'qyForm', 'layer'], initpage);
+
+
+    function initpage() {
+        loadData();
+        getBtcNowPrice();
+        setInterval(getBtcNowPrice, 3000);
+    }
+
+    //返回刷新
+    var isPageHide = false;
+    window.addEventListener('pageshow', function () {
+        if (isPageHide) {
+            //执行刷新操作
+            initpage();
+        }
+    });
+    window.addEventListener('pagehide', function () {
+        isPageHide = true;
+    });
+
+    function getBtcNowPrice() {
+        layui.qyForm.qyajax("/f/app/machine/getBtcNowPrice", {}, function (data) {
+            btcPrice = data.price;
+        });
+
+    }
+
+    function loadData() {
+        getMessage();
+        renzheng();
+    }
+
+    function toBtcMoney() {
+        layui.qyWin.win("btc-money", "btc-money.html?renStatus=" + renStatus, {});
+    }
+
+    function getMessage() {
+        layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function (data) {
+            $("#niceName").html(data.userinfo.userNicename);
+            $("#money").html(data.userinfo.money);
+            $("#powerMoney").html(data.userinfo.money5);
+            $("#btcMoney").html("<span style='font-size:0.9rem;color:#ff7000;'>" + data.userinfo.money6.toFixed(10) + "</span>" + "&nbsp;" + "BTC");
+            $("#userLogo").attr("src", CONS_AJAX_URL + data.userLogo);
+            btcMoney = data.userinfo.money6;
+        });
+    }
+
+    var turn = 0;
+
+    function imgRotate() {
+        if (turn == 0) {
+            $("#imgrotate").css({
+                'transform': "rotate(180deg)"
+            });
+            $("#btcMoney").html("￥" + "&nbsp;" + "<span style='font-size:0.9rem;color:#ff7000;'>" + (btcMoney * btcPrice).toFixed(2) + "</span>");
+            turn = 1;
+        } else {
+            $("#imgrotate").css({
+                'transform': "rotate(0deg)"
+            });
+            $("#btcMoney").html("<span style='font-size:0.9rem;color:#ff7000;'>" + btcMoney.toFixed(10) + "</span>" + "&nbsp;" + "BTC");
+            turn = 0;
+        }
+
+    }
+
+    function toTX() {
+        renzheng();
+
+        if (renStatus != "1") {
+            layui.qyWin.toast("请先进行实名认证!");
+            return;
+        }
+        layui.qyForm.qyajax("/f/app/machine/tiXianPass", {}, function (data) {
+            if (data.statu == "true") {
+                layui.qyWin.win("tixian", "tixian.html");
+            } else {
+                layui.qyWin.toast("提现正在审核中,请勿重复提交!");
+            }
+        });
+    }
+
+    function renzheng() {
+        layui.qyForm.qyajax("/f/app/machine/getRenZhengStatus", {}, function (data) {
+
+            renStatus = data.sta;
+            if (renStatus == "3") {
+                $("#renStatus").html("未认证");
+                $("#renStatus").css("color", "red");
+            } else if (renStatus == "1") {
+                $("#renStatus").html("已认证");
+                $("#renStatus").css("color", "green");
+            } else if (renStatus == "0") {
+                $("#renStatus").html("审核中");
+                $("#renStatus").css("color", "#999999");
+            } else if (renStatus == "2") {
+                $("#renStatus").html("已驳回");
+                $("#renStatus").css("color", "red");
+            }
+
+        });
+    }
+
+    function toRenzheng() {
+
+        renzheng();
+
+
+        if (renStatus == "3" || renStatus == "2") {
+            layui.qyWin.win("renzheng", "renzheng.html", "");
+        } else if (renStatus == "0") {
+            layui.qyWin.toast("正在审核中,请勿重复提交!");
+        } else if (renStatus == "1") {
+            layui.qyWin.toast("您已通过审核,请勿重复提交!");
+        }
+    }
+
+    function toAddCard() {
+        if (renStatus != 1) {
+            layui.qyWin.toast("请先进行实名认证!");
+
+        } else {
+            layui.qyWin.win("idcardlist", "idcardlist.html", "");
+        }
+    }
+
+    function loginOut() {
+        layui.layer.open({
+            content: '您确定要退出吗？',
+            btn: ['确认', '取消'],
+            yes: function (index) {
+                layui.qyForm.qyajax("/f/logOut",{},function (data) {
+                    layui.qyWin.toast(data.info);
+                    setTimeout(function () {
+                        layui.qyWin.win("login","login.html");
+                    },1500);
+                });
+            }
+        })
+    }
+
+    function recharge() {
+        layui.qyWin.toast("请下载APP充值");
+        // layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function (data) {
+        //     layui.qyWin.win("recharge", CONS_AJAX_URL + "/f/payment/pay/recharge?beanName=rechargeService&methodName=updateUserMoney&userName=" + data.userinfo.userName, {});
+        // });
+    }
+
+    function reload() {
+        initpage();
+    }
+
+    function openWin(name) {
+        layui.qyWin.win(name, name + ".html", {}, {reload: true});
+    }
+
+    function openKeFu() {
+        layui.qyWin.win("kefu","https://ssg.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=923507&configID=41479&jid=7667298193&s=1", {});
+
+    }
+</script>
+
+</html>

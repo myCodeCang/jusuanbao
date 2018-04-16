@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>资讯详情</title>
+	<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+	<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+	<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+</head>
+
+<body>
+	<header class="aui-bar aui-bar-nav home">
+			<a class="aui-pull-left aui-btn back"  href="#">
+					<span class="aui-iconfont aui-icon-left"></span>
+			</a>
+			<div class="aui-title">资讯详情</div>
+
+	</header>
+		<div id="detail" style="padding:10px"></div>
+</body>
+
+<script type="text/javascript">
+	//框架初始化
+    qySoftInit("../../static/qyScript/web/");
+
+	//apicloud 准备完成
+	layui.use(['qyWin', 'qyForm', 'template'], initpage);
+
+
+	function initpage() {
+		var qyWin = layui.qyWin;
+		var articleId = layui.qyForm.GetQueryString("id");
+
+		layui.qyForm.qyajax("/f/webArticle/detail",{"articleId":articleId},function (data) {
+									$("#detail").html(data.article.content);
+		});
+
+	}
+</script>
+
+</html>

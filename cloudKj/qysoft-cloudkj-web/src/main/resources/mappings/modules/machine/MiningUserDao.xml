@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.machine.dao.MiningUserDao">
+    
+	<sql id="miningUserColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.machine_id AS "machineId",
+		a.hashrate AS "hashrate",
+		a.count AS "count",
+		a.amount_earnings AS "amountEarnings",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		m.name AS "miningMachine.name",
+		m.start_date AS "miningMachine.startDate",
+		m.earnings AS "miningMachine.earnings",
+		m.status AS "miningMachine.status",
+		m.power_expend AS "miningMachine.powerExpend"
+	</sql>
+	
+	<sql id="miningUserJoins">
+		LEFT JOIN mining_machine m ON a.machine_id = m.id
+	</sql>
+    
+	<select id="get" resultType="MiningUser">
+		SELECT 
+			<include refid="miningUserColumns"/>
+		FROM mining_user a
+		<include refid="miningUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getByUserName" resultType="MiningUser">
+		SELECT
+		<include refid="miningUserColumns"/>
+		FROM mining_user a
+		<include refid="miningUserJoins"/>
+		WHERE a.user_name = #{userName}
+			AND a.machine_id = #{machineId}
+		limit 1
+	</select>
+
+
+	
+	<select id="findList" resultType="MiningUser">
+		SELECT 
+
+			<include refid="miningUserColumns"/>
+		FROM mining_user a
+		<include refid="miningUserJoins"/>
+		<where>
+			<if test="userName != null and userName != ''">
+				AND a.user_name = #{userName}
+			</if>
+			<if test="machineId != null and machineId != ''">
+				AND a.machine_id = #{machineId}
+			</if>
+			<if test="machineDateEnd != null and machineDateEnd != ''">
+				AND DATE_FORMAT(m.start_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{machineDateEnd}, '%Y-%m-%d')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<when test="orderBy !=null and orderBy != ''">
+				ORDER BY ${orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MiningUser">
+		SELECT 
+			<include refid="miningUserColumns"/>
+		FROM mining_user a
+		<include refid="miningUserJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO mining_user(
+			id,
+			user_name,
+			machine_id,
+			hashrate,
+			count,
+			amount_earnings,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{machineId},
+			#{hashrate},
+			#{count},
+			#{amountEarnings},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mining_user SET 	
+			user_name = #{userName},
+			machine_id = #{machineId},
+			hashrate = #{hashrate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE mining_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateUserAmountEarings">
+		UPDATE mining_user SET
+		count = count + #{count},
+		amount_earnings = amount_earnings + #{amountEarnings}
+		WHERE user_name = #{userName}
+			AND machine_id = #{machineId}
+	</update>
+	
+</mapper>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>BTC账户</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../script/layer/css/layer-mobile.css"/>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+</head>
+
+<body class="bg-gray">
+    <header class="aui-bar aui-bar-nav home">
+        <a class="aui-pull-left aui-btn back" href="#">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title">BTC账户管理</div>
+    </header>
+    <div class="height-one"></div>
+    <div class="aui-content btccard" id="temp_cards">
+       
+    </div>
+    <div class="blank_15"></div>
+    <div class="blank_15"></div>
+    <div class="blank_15"></div>
+    <div class="aui-content card-but">
+        <a href="btc-bangding-card.html">
+            <div class="aui-btn aui-btn-block"><i class="aui-iconfont aui-icon-plus"></i>添加BTC账户</div>
+        </a>
+    </div>
+</body>
+<script type="text/html" id="tpl_cards">
+{{each btcBurses}}
+     <div class="btccard-one">
+            <p><span>{{$value.trueName}}</span></p>
+            <p>{{$value.bankAccount}}</p>
+            <div class="aui-btn" onclick="delateBank({{$value.id}})">删除</div>
+            </div>
+     </div>
+{{/each}}
+</script>
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    var btcMoney;
+    var btcPrice;
+    var txFlag = false;
+
+    //apicloud 准备完成
+        layui.use(['qyWin', 'qyForm', 'qyShop', 'layer','template'], initpage);
+
+    function initpage() {
+        loadData();
+        
+    };
+
+    //返回刷新
+    var isPageHide = false;
+    window.addEventListener('pageshow', function () {
+        if (isPageHide) {
+            //执行刷新操作
+            loadData();
+        }
+    });
+    window.addEventListener('pagehide', function () {
+        isPageHide = true;
+    });
+
+    function loadData() {
+        layui.qyForm.qyajax("/f/app/machine/getBtcPursetList", {}, function (data) {
+            var html = template('tpl_cards',data);
+            $("#temp_cards").html(html);
+        });
+    }
+
+    function delateBank(id){
+        layui.layer.open({
+            content: '您确定要删除吗？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index){                          
+                layui.qyForm.qyajax("/f/app/machine/delateBtcBurse", {id:id}, function (data) {
+                    layui.qyWin.toast(data.info);
+                    loadData();
+                });
+                layui.layer.close(index);
+            }
+         });
+        
+    }
+
+</script>
+
+</html>

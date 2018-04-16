@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.machine.dao.MiningUserLogDao">
+    
+	<sql id="miningUserLogColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.machine_id AS "machineId",
+		a.hashrate AS "hashrate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		m.name AS "miningMachine.name",
+		m.earnings AS "miningMachine.earnings",
+		m.status AS "miningMachine.status",
+		m.power_expend AS "miningMachine.powerExpend"
+	</sql>
+	
+	<sql id="miningUserLogJoins">
+		LEFT JOIN mining_machine m ON a.machine_id = m.id
+	</sql>
+    
+	<select id="get" resultType="MiningUserLog">
+		SELECT 
+			<include refid="miningUserLogColumns"/>
+		FROM mining_user_log a
+		<include refid="miningUserLogJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MiningUserLog">
+		SELECT 
+
+			<include refid="miningUserLogColumns"/>
+		FROM mining_user_log a
+		<include refid="miningUserLogJoins"/>
+		<where>
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name = #{userName}
+			</if>
+			<if test="machineId != null and machineId != ''">
+				AND a.machine_id = #{machineId}
+			</if>
+			<if test="createDateEnd != null and createDateEnd != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{createDateEnd}, '%Y-%m-%d')
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') = DATE_FORMAT(#{createDate}, '%Y-%m-%d')
+			</if>
+			<if test="machineDateEnd != null and machineDateEnd != ''">
+				AND DATE_FORMAT(m.start_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{machineDateEnd}, '%Y-%m-%d')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<when test="orderBy != null and orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+
+	<select id="findBonusList" resultType="MiningUserLog">
+		SELECT
+		a.user_name AS "userName",
+		a.machine_id AS "machineId",
+		sum(a.hashrate) AS "hashrate",
+		m.name AS "miningMachine.name",
+		m.earnings AS "miningMachine.earnings",
+		m.status AS "miningMachine.status",
+		m.power_expend AS "miningMachine.powerExpend"
+		FROM mining_user_log a
+		LEFT JOIN mining_machine m ON a.machine_id = m.id
+		<where>
+			<if test="createDateEnd != null and createDateEnd != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{createDateEnd}, '%Y-%m-%d')
+			</if>
+			<if test="machineDateEnd != null and machineDateEnd != ''">
+				AND DATE_FORMAT(m.start_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{machineDateEnd}, '%Y-%m-%d')
+			</if>
+		</where>
+			GROUP BY a.user_name ,a.machine_id
+			ORDER BY a.id
+
+	</select>
+
+	<select id="findBonusToLog" resultType="MiningUserLog">
+		SELECT
+		a.user_name AS "userName",
+		a.machine_id AS "machineId",
+		sum(a.hashrate) AS "hashrate"
+		FROM mining_user_log a
+		<where>
+			<if test="createDate != null and createDate != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') = DATE_FORMAT(#{createDate}, '%Y-%m-%d')
+			</if>
+		</where>
+		GROUP BY a.user_name ,a.machine_id
+
+	</select>
+	
+	<select id="findAllList" resultType="MiningUserLog">
+		SELECT 
+			<include refid="miningUserLogColumns"/>
+		FROM mining_user_log a
+		<include refid="miningUserLogJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO mining_user_log(
+			id,
+			user_name,
+			machine_id,
+			hashrate,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{machineId},
+			#{hashrate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mining_user_log SET 	
+			user_name = #{userName},
+			machine_id = #{machineId},
+			hashrate = #{hashrate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE mining_user_log SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	<update id="updateHashrate">
+		UPDATE mining_user_log SET
+		hashrate = hashrate + #{hashrate}
+		WHERE id = #{id}
+	</update>
+
+</mapper>

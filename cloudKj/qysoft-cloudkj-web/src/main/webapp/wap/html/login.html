@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>登录</title>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <style type="text/css">
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background: url(../image/login-bg.png);
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            background-position: 50% 50%;
+        }
+    </style>
+</head>
+<body>
+<div class="aui-content logo">
+    <img src="../image/logo.png"/>
+</div>
+<div class="aui-content login">
+    <ul class="aui-list aui-form-list">
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label-icon">
+                    <i class="aui-iconfont">
+                        <img src="../image/ico-geren.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="username" placeholder="请输入手机号">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label-icon">
+                    <i class="aui-iconfont">
+                        <img src="../image/ico-mima.png"/>
+                    </i>
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="password" id="password" placeholder="请输入密码">
+                </div>
+            </div>
+        </li>
+    </ul>
+    <p>
+        <label><input class="aui-checkbox" type="checkbox" name="checkbox" checked=""
+                      id="rempwd">&nbsp;&nbsp;记住密码</label>
+        <a href="forgetPass.html" class="aui-pull-right">忘记密码</a>
+    </p>
+    <div class="aui-btn aui-btn-block" onclick="login()">登 录</div>
+</div>
+<p class="login-p"><a href="javascript:void (0)" onclick="toRegister()">立即注册</a></p>
+</body>
+
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    layui.use(['qyWin', 'qyForm', 'qyShop'], initpage);
+
+    var loginFlag = false;
+    function initpage() {
+        var qyWin = layui.qyWin;
+        var qyForm = layui.qyForm;
+
+        var username = layui.qyWin.getPrefs("username");
+        var password = layui.qyWin.getPrefs("password");
+        var rempwd = layui.qyWin.getPrefs("rempwd");
+        if (rempwd == 1) {
+            $("#username").val(username);
+            $("#password").val(password);
+            $("#rempwd").attr('checked', 'checked');
+        }
+
+
+    }
+
+    function toRegister() {
+         // layui.qyWin.win("register", CONS_AJAX_URL + "/f/register?tj=pt10001");
+    layui.qyWin.win("register","register.html");
+    }
+
+    function login() {
+
+
+        var username = $("#username").val();
+        var password = $("#password").val();
+
+        if (!username) {
+            layui.qyWin.toast("请输入用户名!");
+            return;
+        }
+        if (!password) {
+            layui.qyWin.toast("请输入密码!");
+            return;
+        }
+
+        if (loginFlag) {
+            return;
+        }
+
+        loginFlag = true;
+
+        var data = {
+            username: username,
+            password: password,
+            mobileLogin: "true",
+            userType: "website",
+            login: "true"
+
+        }
+
+
+        layui.qyForm.qyajax("/f/login", data, function () {
+
+            layui.qyWin.toast("登录成功!");
+            //设定偏好数据
+            if ($("#rempwd").get(0).checked) {
+                layui.qyWin.setPrefs("username", username);
+                layui.qyWin.setPrefs("password", password);
+                layui.qyWin.setPrefs("rempwd", 1);
+            } else {
+                layui.qyWin.setPrefs("username", "");
+                layui.qyWin.setPrefs("password", "");
+                layui.qyWin.setPrefs("rempwd", "");
+            }
+            setTimeout(function () {
+                window.location.href="index.html";
+                //layui.qyWin.win("index", "index.html", {});
+            }, 500);
+
+
+        }, function (ret) {
+            loginFlag = false;
+
+        });
+    }
+
+
+</script>
+
+</html>

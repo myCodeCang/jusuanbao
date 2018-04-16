@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>比特币钱包</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+</head>
+<body class="bg-gray">
+<header class="aui-bar aui-bar-nav home">
+    <a class="aui-pull-left aui-btn back" href="#">
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a>
+    <div class="aui-title">比特币钱包</div>
+</header>
+<div class="height-one"></div>
+<div class="aui-content btc-qianbao">
+    <h3>总金额</h3>
+    <span><span id="btcMoney"></span><span> BTC</span></span>
+</div>
+<div class="aui-content aui-margin-t-10 btc-detail">
+    <ul class="aui-list aui-list-in">
+        <a href="btcearn.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">比特币收益</div>
+                </div>
+            </li>
+        </a>
+        <a href="btctxlog.html">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">比特币账变</div>
+                </div>
+            </li>
+        </a>
+        <a href="javascript:void(0)" onclick="toPage('btc-withdraw')">
+            <li class="aui-list-item aui-list-item-middle">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">比特币提现</div>
+                </div>
+            </li>
+        </a>
+        <a href="javascript:void(0)" onclick="toPage('btcChangeMoney')">
+            <li class="aui-list-item aui-list-item-middle">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">比特币转余额</div>
+                </div>
+            </li>
+        </a>
+        <a href="javascript:void(0)" onclick="toPage('btc-cards')">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner aui-list-item-arrow">
+                    <div class="aui-list-item-title">比特币账户管理</div>
+                </div>
+            </li>
+        </a>
+    </ul>
+</div>
+</body>
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+
+    var loginFlag = false;
+    var renStatus = 0;
+
+    //apicloud 准备完成
+
+    layui.use(['qyWin', 'qyForm', 'qyShop'], initpage);
+
+    function initpage() {
+        loadData();
+        renStatus = layui.qyForm.GetQueryString("renStatus");
+
+    };
+
+    function loadData() {
+        layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function (data) {
+            $("#btcMoney").html(data.userinfo.money6);
+        });
+    }
+
+    var isPageHide = false;
+    window.addEventListener('pageshow', function () {
+        if (isPageHide) {
+            //执行刷新操作
+            loadData();
+        }
+    });
+    window.addEventListener('pagehide', function () {
+        isPageHide = true;
+    });
+
+    function toPage(name) {
+        if (renStatus != 1) {
+            layui.qyWin.toast("请先实名认证");
+            return;
+        }
+        layui.qyWin.win(name, name + ".html", {});
+    }
+
+</script>
+</html>

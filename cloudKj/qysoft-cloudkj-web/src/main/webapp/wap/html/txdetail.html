@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>提现详情</title>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+	</head>
+	<body> 
+		<header class="aui-bar aui-bar-nav home">
+			<a class="aui-pull-left aui-btn back"  href="#">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+			<div class="aui-title">提现详情</div>
+		</header>
+		<div class="height-one"></div>
+		<section class="aui-content xiangqin_one aui-margin-b-10">
+	        <ul class="aui-list">
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">提现编号 :&nbsp;<span id="id"></span></div>
+	                </div>
+	            </li>
+	            
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">账变金额 :&nbsp;<span id="chargeMoney"></span></div>
+	                </div>
+	            </li>
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">到账金额 :&nbsp;<span id="daoZhangMoney"></span></div>
+	                </div>
+	            </li>
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">账变前金额 :&nbsp;<span id="beforeMoney"></span></div>
+	                </div>
+	            </li>
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">账变后金额 :&nbsp;<span id="afterMoney"></span></div>
+	                </div>
+	            </li>
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">状态 :&nbsp;<span id="chargeType"></span></div>
+	                </div>
+	            </li>
+	          
+	        </ul>
+	    </section>
+	    <section class="aui-content xiangqin_one">
+	        <ul class="aui-list">
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14" style="padding:0.5rem 0;">说明 :&nbsp;<span id="commt"></span></div>
+	                </div>
+	            </li>
+	            <li class="aui-list-item">
+	                <div class="aui-list-item-inner">
+	                    <div class="aui-list-item-title aui-font-size-14">提现时间 :&nbsp;<span id="createDate">210625</span></div>
+	                </div>
+	            </li>
+	        </ul>
+	    </section>    
+	</body>
+	<script type="text/javascript" src="../script/layer/layui.js"></script>
+    <script type="text/javascript" src="../script/qyconfig.js"></script>
+	<script type="text/javascript">
+			//框架初始化
+            qySoftInit("../../static/qyScript/web/");
+			//apicloud 准备完成
+
+			layui.use(['qyWin','qyForm','layer','template'], initpage);
+
+			function initpage(){
+					 loadData();	
+			}
+			function loadData(){			
+			    var txId=layui.qyForm.GetQueryString('txId');	
+			    if(!txId){			    
+				    layui.qyWin.toast("参数错误!");
+						return ;
+			    }   
+				layui.qyForm.qyajax("/f/app/userinfo/userTxDetail",{txId:txId},function(data){	
+//					    alert(JSON.stringify(data));
+						var poundage = data.poundage;
+						$("#id").html(data.UserChargedetail.id);	
+						$("#chargeMoney").html(data.UserChargedetail.changeMoney);	
+						$("#beforeMoney").html(data.UserChargedetail.beforeMoney);	
+						$("#afterMoney").html(data.UserChargedetail.afterMoney);	
+						$("#chargeType").html(data.UserChargedetail.status == 0 ? "未处理" : data.UserChargedetail.status == 1 ? "已同意" : "已驳回");
+						var poundageMoney = data.UserChargedetail.changeMoney * poundage <10?10:data.UserChargedetail.changeMoney * poundage
+
+						$("#daoZhangMoney").html((data.UserChargedetail.changeMoney - poundageMoney).toFixed(2));
+	
+						$("#commt").html(data.UserChargedetail.commt);	
+						$("#createDate").html(data.UserChargedetail.createDate);	
+							         
+				});									
+			}	
+			function isInteger(obj) {
+			 return obj%1 === 0
+			}								
+			//刷新页面方法, closeWin(true) 回调使用
+ 			function reload(){
+   				initpage();
+  			}
+	</script>
+</html>

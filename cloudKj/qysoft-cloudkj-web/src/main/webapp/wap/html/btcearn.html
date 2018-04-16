@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>比特币收益</title>
+    <link rel="stylesheet" href="../css/module/menudown/menudown.css"/>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+
+</head>
+
+<body class="bg-fff">
+<header class="aui-bar aui-bar-nav home" id="header">
+    <a class="aui-pull-left aui-btn back" href="#">
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a>
+    <div class="aui-title">比特币收益</div>
+
+</header>
+
+<div class="height-one"></div>
+<div class="aui-content asset zichan">
+    <ul class="aui-list aui-media-list" id="temp-chargeLog">
+
+
+    </ul>
+</div>
+<div class="jiazai-box aui-content"></div>
+</body>
+<script id="tpl-chargeLog" type="text/html">
+    {{if list.count ==0 }}
+    <div class="aui-content shdz">
+        <img src="../image/zanwushuju.png">
+    </div>
+    {{else}} {{each list.list}}
+    <li class="aui-list-item">
+        <div class="aui-media-list-item-inner">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-text">
+                    <div class="aui-list-item-title">
+                        BTC帐户
+                    </div>
+                </div>
+                <div class="aui-list-item-text aui-ellipsis-1">
+                    {{$value.commt}}
+                </div>
+                <div class="aui-list-item-text aui-ellipsis-1">
+                    {{$value.createDate}}
+                </div>
+                {{if $value.changeMoney>0}} <span class="asset-jia">+ {{$value.changeMoney}}</span>
+                {{else}}
+                <span class="asset-jian"> {{$value.changeMoney}}</span> {{/if}}
+            </div>
+        </div>
+    </li>
+    {{/each}} {{/if}}
+
+</script>
+
+
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    var type = "";
+    var date = "";
+    //apicloud 准备完成
+        layui.use(['qyWin', 'qyForm', 'template', 'menudown'], initpage);
+
+
+    function initpage() {
+        var qyWin = layui.qyWin;
+        var qyForm = layui.qyForm;
+
+        qyForm.pageajax(loadData, {
+            "pageNo": "1",
+            "pageSize": "10"
+        });
+    }
+
+
+    function loadData(param, callback) {
+
+        layui.qyForm.qyajax("/f/app/machine/findBtcEarn", param, function (data) {
+            var pageData = data.list;
+            var html = template('tpl-chargeLog', data);
+            $("#temp-chargeLog").append(html);
+
+
+            //分页回调结束处理方法, 传入的参数必须正确
+            if (callback) {
+                callback(pageData);
+            }
+        });
+    }
+</script>
+
+</html>

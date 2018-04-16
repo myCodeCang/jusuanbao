@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.machine.dao.MiningMachineDao">
+    
+	<sql id="miningMachineColumns">
+	a.id AS "id",
+	a.name AS "name",
+	a.money AS "money",
+	a.all_hashrate AS "allHashrate",
+	a.now_hashrate AS "nowHashrate",
+	a.earnings AS "earnings",
+	a.power_expend AS "powerExpend",
+	a.image AS "image",
+	a.start_date AS "startDate",
+	a.status AS "status",
+	a.message AS "message",
+	a.risk AS "risk",
+	a.create_by AS "createBy.id",
+	a.create_date AS "createDate",
+	a.update_by AS "updateBy.id",
+	a.update_date AS "updateDate",
+	a.remarks AS "remarks",
+	a.del_flag AS "delFlag"
+</sql>
+
+	<sql id="miningMachineColumnsByLock">
+		a.id AS "id",
+		a.name AS "name",
+		a.money AS "money",
+		a.all_hashrate AS "allHashrate",
+		a.now_hashrate AS "nowHashrate",
+		a.earnings AS "earnings",
+		a.power_expend AS "powerExpend",
+		a.image AS "image",
+		a.start_date AS "startDate",
+		a.status AS "status",
+		a.message AS "message",
+		a.risk AS "risk",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="miningMachineJoins">
+	</sql>
+    
+	<select id="get" resultType="MiningMachine">
+		SELECT 
+			<include refid="miningMachineColumns"/>
+		FROM mining_machine a
+		<include refid="miningMachineJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<select id="getLock" resultType="MiningMachine">
+		SELECT
+		<include refid="miningMachineColumnsByLock"/>
+		FROM mining_machine a
+		WHERE a.id = #{id}
+		for UPDATE
+	</select>
+
+	<select id="findList" resultType="MiningMachine">
+		SELECT 
+
+			<include refid="miningMachineColumns"/>
+		FROM mining_machine a
+		<include refid="miningMachineJoins"/>
+		<where>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
+
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id  DESC
+			</otherwise>
+		</choose>
+		<if test="topLimit !=null">
+			limit ${topLimit}
+		</if>
+	</select>
+	
+	<select id="findAllList" resultType="MiningMachine">
+		SELECT 
+			<include refid="miningMachineColumns"/>
+		FROM mining_machine a
+		<include refid="miningMachineJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO mining_machine(
+			id,
+			name,
+			money ,
+			all_hashrate,
+			now_hashrate,
+			earnings,
+			power_expend,
+			image,
+			start_date,
+			status,
+			message,
+			risk,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{name},
+			#{money},
+			#{allHashrate},
+			#{nowHashrate},
+			#{earnings},
+			#{powerExpend},
+			#{image},
+			#{startDate},
+			#{status},
+			#{message},
+			#{risk},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE mining_machine SET 	
+			name = #{name},
+			money = #{money},
+			all_hashrate = #{allHashrate},
+			now_hashrate = #{nowHashrate},
+			earnings = #{earnings},
+			power_expend = #{powerExpend},
+			image = #{image},
+			start_date = #{startDate},
+			status = #{status},
+			message = #{message},
+			risk = #{risk},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	<update id="updateNowHashrate">
+		UPDATE mining_machine SET
+		now_hashrate = now_hashrate + #{nowHashrate}
+		WHERE id = #{id}
+	</update>
+
+	<update id="batchSetEarnings">
+		UPDATE mining_machine SET
+		earnings = #{earnings}
+	</update>
+
+	<update id="delete">
+		delete  from mining_machine
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,501 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>算力-合约</title>
+		<link href="../css/base.css?v=1.5" rel="stylesheet">
+		<link href="../css/index.css?v=1.6" rel="stylesheet">
+		<meta name="format-detection" content="telephone=no">
+		<script type="text/javascript" src="../script/jquery.js"></script>
+		<script type="text/javascript" src="../script/echarts.min.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<script type="text/javascript" src="../script/highcharts.js"></script>
+		<script type="text/javascript" src="../script/main.js?v=1.5"></script>
+		<script type="text/javascript" src="../script/login.js"></script>
+	</head>
+
+	<body>
+		<div class="head">
+			<div class="twonav">
+				<div class="wrapper"><img src="../image/logo.png?v=1.4" class="fl"><span class="fr"><a href="../index.html">首页</a>
+  	<!--<a href="deal.html">交易</a>--><a href="hashrate.html" class="on" id="banner">算力</a><a href="pool.html">矿池</a><a href="message.html">资讯</a><a href="service.html">服务</a><a href="about.html">关于</a></span>
+				</div>
+			</div>
+			<div class="subNavBox">
+				<div class="container">
+					<ul class="subNav" style="min-width: 400px;">
+						<li class="subNavItem ">
+							<a href="hashrate.html" >合约首页</a>
+						</li>
+						<li class="subNavItem subNavItem_current">
+							<a href="javascript:void(0)" onclick="loginGo('agreement')">合约</a>
+						</li>
+						<li class="subNavItem ">
+							<a href="javascript:void(0)" onclick="loginGo('my_agreement')">我的算力</a>
+						</li>
+						<!--<li class="subNavItem">-->
+							<!--<a href="javascript:void(0)" id="status" onclick="loginOut()">注销</a>-->
+						<!--</li>-->
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<!--内容-->
+
+		<div class="bgf6" deep="0">
+			<div class="wrapper clearfix">
+				<div class="pro-lst-nav fl" id="template_name">
+					<!--<a href="javascript:void(0);" class="on">S9合约</a>-->
+					<!--<a href="javascript:void(0);">S9 11月合约</a>-->
+					<!--<a href="javascript:void(0);">阿瓦隆741合约</a>-->
+					<!--<a href="javascript:void(0);">阿瓦隆1T算力服务合约</a>-->
+				</div>
+				<div class="pro-lst-main fr" >
+					<div class="pro-lst-main-tt f18 bold">合约信息</div>
+					<div class="pro-lst-main-sd mb20 clearfix">
+						<h4 class="f36 col888 pro-lst-contract-tt" id="name"></h4>
+						<div class="pro-lst-contract-sd fl">
+							<div class="clearfix mb30">
+								<input type="hidden" id="id">
+								<div class="fl pro-lst-contract-sd-li1">
+									<p class="f28 col333" id="money"></p>
+									<p class="f16 col888">单价（CNY）</p>
+								</div>
+								<div class="fl pro-lst-contract-sd-li2">
+									<p class="f28 col333"	id="message"></p>
+									<p class="f16 col888">算力（TH/s）</p>
+								</div>
+								<div class="fl pro-lst-contract-sd-li3">
+									<p class="f28 colff7" id="power"></p>
+									<p class="f16 col888">电费（元/度）</p>
+								</div>
+							</div>
+							<div class="clearfix mb10">
+								<div class="fl pro-lst-contract-sd-li4">
+									<p class="f16 col888" id="manageMoney2"><br data-filtered="filtered"></p>
+									<p>库存：<span class="col555" id="nowNum"></span>TH/s </p>
+								</div>
+								<div class="fl pro-lst-contract-sd-li4">
+									<p class="f16 col888">转为算力：<span class="col555" id="startDate"></span><br data-filtered="filtered">最小购买份数：<span class="col555">1TH/s</span> </p>
+								</div>
+								<div class="fl pro-lst-contract-sd-li4">
+									<p class="f16 col888">功耗：<span class="col555" id="powerExcept"></span></p>
+								</div>
+							</div>
+							<p class="f16 col888 fl">剩余份数：</p>
+							<div class="fl pro-lst-contract-sd-chart">
+								<p id="jindu" style="background: #e85514;display: block;height: 100%;"></p>
+							</div>
+							<p class="f16 col888 fl" id="shengyu"></p>
+						</div>
+						<div class="pro-lst-contract-sdc fr">
+							<div class="pro-lst-contract-sdc-li clearfix">
+								<p class="col888 f18 fl">数量</p>
+								<p class="f27 cole8 mr12 disnone" id="purchase-pric" data-filtered="filtered">15000</p>
+								<input type="number" id="num" class="pro-lst-contract-sdc-ipt1 fl tac perchaseNum" id="purchase-amount-input" name="buy-amount"  value="1" min="1">
+								<p class="col888 f18 fl">TH/s</p>
+								<span class="num disnone" id="purchase-price" data-filtered="filtered"></span>
+								<input type="hidden" value="" name="paymentAmount" id="paymentAmount" data-filtered="filtered">
+							</div>
+							<div class="pro-lst-contract-sdc-li clearfix">
+								<p class="col888 f18 fl">余额</p>
+								<input type="text" placeholder="" id="userMoney" name="btcAddr" class="pro-lst-contract-sdc-ipt2 fl btcAddr " value="kjmk" disabled="">
+								<p></p>
+
+							</div>
+							<div class="pro-lst-contract-sdc-li clearfix">
+								<p class="col888 f18 fl">账号</p>
+								<input type="text" placeholder="" id="userMobile" class="pro-lst-contract-sdc-ipt2 fl paymentMark payFrom" name="paymentMark" disabled="">
+							</div>
+							<p class="f14 col888"><input id="agreement" name="agreement" type="checkbox" class="checkbox" checked="checked"> 我已阅读并同意：
+								<a href="javascript:void(0);"  class="colff7" onclick="tanHeyue();" id="hyName"></a>
+							</p>
+							<a href="javascript:void(0);" class="tac f20 colfff pro-lst-contract-sdc-go mt10 buybtn" onclick="buy()">购 买</a>
+						</div>
+					</div>
+					<div class="pro-lst-main-tt f18 bold">项目简介</div>
+					<div class="pro-lst-main-sd mb20 clearfix">
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">算力类型</p>
+							<p class="f16 col555 fl" id="name2"></p>
+						</div>
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">合约单位</p>
+							<p class="f16 col555 fl" id="message2"> </p>
+						</div>
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">功耗</p>
+							<p class="f16 col555 fl" id="powerExcept2"></p>
+						</div>
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">电费</p>
+							<p class="f16 col555 fl" id="power2"></p>
+						</div>
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">管理费</p>
+							<p class="f16 col555 fl" id="manageMoney"></p>
+						</div>
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">合约周期</p>
+							<p class="f16 col555 fl">永久，至连续10天不生产收益为止</p>
+						</div>
+						<div class="pro-lst-briefing-li clearfix">
+							<p class="f16 col888 fl pro-lst-briefing-name">预估日收益</p>
+							<p class="f16 col555 fl" id="shouyi"></p>
+						</div>
+					</div>
+					<div class="pro-lst-main-tt f18 bold">风险提示</div>
+					<div class="pro-lst-main-sd mb20 clearfix">
+						<p class="f16 col555 pro-lst-risk-text" id="fengxian">用户所购买的比特币收益可能受到对应算力输出算力波动的影响，而造成每日获得比特币收益的波动。比特币对应人民币价 格根据市场波动，客户需自行承担相应风险。
+						</p>
+					</div>
+				</div>
+			</div>
+			<!--购买确认弹框-->
+			<style>
+				.tankuang{position:fixed;width:500px;height:300px;top:50%;margin-top:-150px;left:50%;margin-left:-250px;background:#fff;z-index: 9999;    padding-top: 50px;
+					box-sizing: border-box;}
+				.tankuang>span{display: block;width:100%;text-align: center;height:30px;line-height: 30px;}
+				.tankuang>input{width:70%;margin-left:15%;height:40px;border:1px solid #ccc;outline: none;text-align: center;margin-top:10px;}
+				.tankuang>p{width:70%;height:40px;line-height: 40px;margin-left:15%;text-align: right;margin-top:10px;}
+				.tankuang>.tan-but{width:80%;margin-left:10%;margin-top:35px;text-align: center;}
+				.tankuang>.tan-but>.tan-hide{width: 136px;line-height: 43px;border-radius: 5px;border: 1px solid #e85514;display: inline-block;margin: 0 12px;text-align: center;color:#e85514 !important;font-size:20px;}
+				.tankuang>.tan-but>.tan-show{width: 136px;line-height: 43px;border-radius: 5px;border: 1px solid #e85514;display: inline-block;margin: 0 12px;text-align: center;color:#fff !important;font-size:20px;background:#e85514;}
+			</style>
+			<div class="pop-pro-by disnone" id="code"></div>
+			<div class="tankuang disnone" id="code2">
+				<h3></h3>
+				<span>验证码已发送,请接收...</span>
+				<input type="text" placeholder="请输入验证码" id="validCode">
+				<p><span>手机号:</span><span id="mobile2"></span></p>
+				<div class="tan-but">
+					<a class="tan-hide" onclick="closeCode()">取 消</a>
+					<a class="tan-show" onclick="buySecceseful()">确认购买</a>
+				</div>
+			</div>
+			<style>
+				#heyueCommt{
+					padding:15px;
+					overflow-y: scroll;
+					height:470px;
+					box-sizing: border-box;
+				}
+			</style>
+			<!--确认订单弹框-->
+			<div class="pop-pro-by disnone" data-filtered="filtered" id="heyue2"></div>
+			<div class="pop-pro-main disnone" data-filtered="filtered" id="heyue">
+				<img src="../image/pop-pro-close.jpg" class="pop-pro-close" onclick="closeHeyue()">
+				<h4 class="f24 col555 tac pop-pro-tt" data-filtered="filtered">合约确认</h4>
+				<div id="heyueCommt">
+
+				</div>
+			</div>
+			<div class="slgmlcbg">
+				<div class="wrapper">
+					<h4 class="sltitle tac f48 colfff"><span class="sltitle-sp">购买流程</span></h4>
+					<div class="slgmlc clearfix tac">
+						<p>客户提交<br data-filtered="filtered">订单信息</p>
+						<p class="p2">确认下单<br data-filtered="filtered">引导客户下载注册<br data-filtered="filtered">BTC钱包</p>
+						<p>指导客户打款<br data-filtered="filtered">完成合同</p>
+						<p>签订及发放<br data-filtered="filtered">电子合同</p>
+						<p>查看BTC钱包<br data-filtered="filtered">每日获得收益</p>
+					</div>
+				</div>
+			</div>
+			<!--QA-->
+			<h4 class="n-qa-tt tac f48 col888"><span class="n-tt-style">常见问题 Q&amp;A</span></h4>
+			<ul class="wrapper n-qa-box">
+				<li>
+					<h4 class="f24 n-qa-q">1.什么是真实挖矿？</h4>
+					<p class="f16 col888 n-qa-a">
+						一台算力或多台算力对应一个比特币地址，真实挖矿数据可查，防止诈骗风险。<br data-filtered="filtered"> 具体操作如下：
+						<br data-filtered="filtered"> 您不需要自己挖矿，我们代替您部署最先进的比特币算力，通过低功耗、低电费、高矿池收益以及专业维护，为您提供最高性价比的代理挖矿服务，您只需认购挖矿合约，即可实时开启比特币挖矿，免去所有算力部署烦恼，同时获得更高投资回报。我们通过大规模的专业矿场部署，最大限度降低成本，将挖矿收益最大化。
+					</p>
+				</li>
+				<li>
+					<h4 class="f24 n-qa-q">2.挖矿有哪些费用？</h4>
+					<p class="f16 col888 n-qa-a">除了购买挖矿合约支付的费用，每天的挖矿收益需要扣除电费和收益6%的管理费（用于矿场维护、算力部署、算力维修，人员支出，突发险情、风险基金等的费用）。</p>
+				</li>
+				<li>
+					<h4 class="f24 n-qa-q">3.什么时候回本？</h4>
+					<p class="f16 col888 n-qa-a">基于目前的挖矿难度和币价，以S9合约为例，静态回本周期约为250天，回本后的挖矿收入即为纯利润。根据现在算力芯片的发展进程，S9合约预计至少能挖矿2-3年。但由于市场波动难以预测，我们不做回本的承诺，用户需要评估可能的风险。但相比炒币的涨跌风险，挖矿是一种更为长期稳定的比特币投资。</p>
+				</li>
+				<li>
+					<h4 class="f24 n-qa-q">4.是否归还本金？</h4>
+					<p class="f16 col888 n-qa-a">每天发放收益，回本后还会继续挖，直到合约失效为止，不存在“本金”一说；想要把合约变现的用户，可以前往交易市场自行买卖合约。</p>
+				</li>
+				<li>
+					<h4 class="f24 n-qa-q">5.合约周期有多长？</h4>
+					<p class="f16 col888 n-qa-a">我们的合约不设期限，挖矿采用业界公用的PPS模式，可以保证较高收益，不过收益不会永远在一个水平，随着挖矿难度增加，收益也会慢慢慢慢慢慢减少，如果连续十天挖到收益不足电费，合约即中止。但是即便如此，我们功率全网最低，所以可以挖更久。</p>
+				</li>
+				<li>
+					<h4 class="f24 n-qa-q">6.合约失效后还能继续挖吗？</h4>
+					<p class="f16 col888 n-qa-a">如果连续10天实际收益为0，则合约终止。</p>
+				</li>
+			</ul>
+		</div>
+
+
+		<!--订单报错提示-->
+		<div class="pop-pro-by disnone" id="tan"></div>
+		<div class="pop-pro-errors disnone" id="tan2">
+			<div class="pop-pro-errors-tt f24 col333 relative">提示
+				<img src="../image/new-pro-icon.jpg" class="pop-pro-errors-icon absolute">
+				<img src="../image/new-pro-close.jpg" class="pop-pro-errors-close absolute" onclick="closeTan()">
+			</div>
+			<p class="f18 col333 tac pop-pro-errors-doc" id="mobile"></p>
+			<div class="tac f22">
+				<a href="javascript:void(0);" class="pop-pro-data-btn pop-pro-data-no " onclick="send()">确 认</a>
+			</div>
+		</div>
+
+
+		<div class="home-bottom">
+			<div class="bottom-detail">
+				<ul class="bottom-detail-one">
+					<h3>深圳锦晖区块链科技有限公司</h3>
+					<li><span>服务热线：</span><span>400-809-3628</span></li>
+					<li><span>QQ号：</span><span>2532341578</span></li>
+					<li><span>地址：</span><span>深圳市福田区滨河大道22号联合广场A座1812</span></li>
+				</ul>
+				<ul class="bottom-detail-two">
+					<h3><a href="index.html">首页</a>|<a href="hashrate.html">算力</a>|<a href="pool.html">矿池</a>|<a href="message.html">资讯</a>|<a href="service.html">服务</a>|<a href="about.html">关于</a></h3>
+					<li><span>浙公网安备 33010402000402</span>&nbsp;&nbsp;&nbsp;<span>©浙ICP备15042144号-1</span></li>
+					<li><span>版权所有©深圳锦晖区块链科技有限公司</span></li>
+					<li><span>Copyright Shenzhen jinhui block link technology co. LTD</span></li>
+				</ul>
+				<div class="bottom-detail-three">
+					<div><img src="../image/weixintupian.jpg"/></div>
+					<span>微信 扫一扫</span>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script type="text/html" id="tpl_name">
+		{{each machineList}}
+			<a href="javascript:void(0);" id="name_{{$index}}" class="{{$index==0?'on':''}}" onclick="loadData({{$index}})">{{$value.name}}合约</a>
+		{{/each}}
+	</script>
+	<script type="text/javascript">
+        //框架初始化
+        qySoftInit("../../static/qyScript/web/");
+		var machineList;
+		var goodsMoney;
+		var userMoney;
+		var userMobile;
+		var sendFlag = false;
+		var buyFlag= false;
+		var nowMoney;
+		var index = 0;
+        layui.use(['qyWin','qyForm','layer','template'], initpage);
+        function initpage(){
+            verfLogin();
+            layui.qyForm.qyajax("/f/isLogin", {}, function (data) {
+                if (!data.isLogin) {
+                    layui.qyWin.win("", "hashrate.html", "");
+                    return;
+                }
+                loadName();
+                userInfo();
+            },function (ret) {
+                layui.qyWin.win("", "hashrate.html", "");
+            });
+
+
+        }
+		
+
+        
+        function loadName() {
+            layui.qyForm.qyajax("/f/machine/machineList", {top:10}, function (data) {
+                var htmlName = template("tpl_name",data);
+                machineList = data.machineList;
+                $("#template_name").html(htmlName);
+                $("#power").html(data.powerMoney);
+                $("#power2").html(data.powerMoney+"元/度");
+                $("#manageMoney").text(data.manageMoney*100 + "%");
+                $("#manageMoney2").text("管理费: " + data.manageMoney*100 + "%");
+                loadData(index);
+            });
+        }
+        
+        function   userInfo() {
+            layui.qyForm.qyajax("/f/machine/userInfo", {}, function (data) {
+                userMoney = data.userInfo.money;
+               $("#userMoney").val("(账户余额:"+data.userInfo.money +" 元)");
+                userMobile = data.userInfo.mobile;
+                var phoneNumber = data.userInfo.mobile.substring(0,3)+"****"+data.userInfo.mobile.substring(8,11);
+                $("#userMobile").val(phoneNumber);
+                $("#mobile2").text(phoneNumber);
+                $("#mobile").text("确认提交订单我们会向您的手机:"+phoneNumber+" 发送验证码,验证成功后完成订单");
+
+            });
+        }
+		
+        function send() {
+            closeTan();
+            if(sendFlag){
+                layui.qyWin.toast('请不要重复申请发送验证码,一分钟后再试');
+                return;
+			}
+            sendCode();
+        }
+		
+        function closeHeyue() {
+			$("#heyue2").addClass("disnone");
+            $("#heyue").addClass("disnone");
+        }
+
+        function tanHeyue() {
+            $("#heyue2").removeClass("disnone");
+            $("#heyue").removeClass("disnone");
+
+        }
+        
+        function buySecceseful() {
+
+            var machineId = $("#id").val();
+            var validCode = $("#validCode").val();
+            var num = $('#num').val();
+            if(!validCode){
+                layui.qyWin.toast("验证码不能为空");
+                return;
+			}
+            if(buyFlag){
+                return;
+            }
+            buyFlag = true;
+            layui.qyForm.qyajax("/f/machine/buy", {num:num,machineId:machineId,validCode:validCode}, function (data) {
+				layui.qyWin.toast(data.info);
+                closeCode();
+                $('#num').val('1');
+				setTimeout(function () {
+                    buyFlag = false;
+                    layui.qyWin.win("my_agreement","my_agreement.html",{});
+                },2500);
+            },function (error) {
+                buyFlag = false;
+            });
+        }
+        
+        function closeCode() {
+            $("#code").addClass('disnone');
+            $("#code2").addClass('disnone');
+        }
+        
+        function sendCode() {
+
+            if(!(/^1[1|3|4|5|6|7|8|9][0-9]\d{4,8}$/.test(userMobile))){
+                layui.qyWin.toast("手机号码有误");
+                return;
+            }
+            var param = {
+                mobile :userMobile
+            };
+            sendFlag = true;
+            layui.qyForm.qyajax("/msm/lkMsm/sendVerifyCode", param, function (data) {
+                $("#code").removeClass('disnone');
+                $("#code2").removeClass('disnone');
+                codeJishi();
+           });
+        }
+
+        //计时器
+		function codeJishi() {
+            setTimeout(function () {
+                sendFlag = false;
+            },60000)
+        }
+
+
+        function loadData(i) {
+            $('.on').removeClass('on');
+            $("#name_"+i).addClass('on');
+            $("#banner").addClass('on');
+            index = i;
+            $("#id").val(machineList[i].id);
+            goodsMoney = machineList[i].money;
+            $("#money").text(machineList[i].money);
+			$("#name").text(machineList[i].name);
+            $("#hyName").text(machineList[i].name)
+            $("#name2").text(machineList[i].name);
+            $("#message").text(machineList[i].message);
+            $("#message2").text(machineList[i].message  + " TH/s");
+            $("#heyueCommt").html(machineList[i].remarks)
+			$("#startDate").text(machineList[i].startDate.substring(0,10));
+            var jindu = (100*machineList[i].nowHashrate/machineList[i].allHashrate).toFixed(0);
+			$("#jindu").css("width",jindu+"%");
+            nowMoney = machineList[i].nowHashrate;
+            $("#shengyu").text(jindu+"%");
+            $("#nowNum").text(machineList[i].nowHashrate);
+            $("#powerExcept").text(machineList[i].powerExpend+"度/TH");
+            $("#powerExcept2").text(machineList[i].powerExpend+"度/TH");
+            $("#shouyi").text(machineList[i].earnings + " BTC/THs")
+
+        }
+
+		function buy(){
+            var num = $('#num').val();
+            var machineId = $("#id").val();
+            if (!/^[1-9][0-9]*$/.test(num)) {
+               layui.qyWin.toast('购买数量必须是大于0的整数');
+                return;
+            }
+            if(nowMoney< num){
+                layui.qyWin.toast('剩余数量不足,无法购买');
+                return;
+			}
+            if(!machineId){
+                layui.qyWin.toast('请先选择一个产品');
+                return;
+			}
+            if(!$('#agreement').is(':checked')) {
+                layui.qyWin.toast('请先勾选合约协议');
+                return;
+            }
+            if(userMoney < goodsMoney * num){
+                layui.qyWin.toast('余额不足,无法下单');
+                return;
+			}
+            $("#tan").removeClass("disnone");
+            $("#tan2").removeClass("disnone");
+        }
+        
+        function closeTan() {
+            $("#tan").addClass("disnone");
+            $("#tan2").addClass("disnone");
+        }
+        
+		function loginOut() {
+            layui.qyForm.qyajax("/f/logOut", {}, function (data) {
+                layui.qyWin.toast(data.info);
+                setTimeout(function () {
+                    layui.qyWin.win("", "hashrate.html", "");
+                },1500)
+            });
+        }
+
+        function loginGo(url) {
+            layui.qyForm.qyajax("/f/isLogin", {}, function (data) {
+                if (data.isLogin) {
+                    layui.qyWin.win("", url + ".html", "");
+                } else {
+                    layui.qyWin.win("", "hashrate.html", "");
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+	</script>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/aui/aui.css"/>
+    <script type="text/javascript" src="../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../static/qyScript/web/qyconfig.js"></script>
+
+
+    <style type="text/css">
+        .aui-bar-tab .aui-active {
+            color: #ee7e4d;
+        }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <div id="header">
+
+    </div>
+    <div id="main">
+    </div>
+
+</div>
+</body>
+
+<script type="text/javascript">
+
+    //  //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+
+    layui.use(['qyWin'], function () {
+        var qyWin = layui.qyWin;
+        qyWin.win("login", "html/login.html", {});
+
+    });
+</script>
+</html>

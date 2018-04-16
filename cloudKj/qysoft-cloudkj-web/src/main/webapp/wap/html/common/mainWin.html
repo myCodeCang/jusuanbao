@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/template/style.css"/>
+    <script type="text/javascript" src="../../script/layer/layui.js"></script>
+    <script type="text/javascript" src="../../script/qyconfig.js"></script>
+
+    <style type="text/css">
+        .aui-bar-tab .aui-active {
+            color: #F46B00;
+        }
+    </style>
+</head>
+<body>
+
+
+</body>
+
+<script id="tpl-footer" type="text/html">
+        
+        <footer class="aui-bar aui-bar-tab ju-footer" id="footer">
+         {{each menuGroup}}
+                <div class="aui-bar-tab-item {{$index ==2?'heyue-bot':''}}" url="{{$value.url}}" fixBar="{{$value.fixBar}}" tapmode >
+                    <i class=" {{$value.label}}"></i>
+                    <div class="aui-bar-tab-label">{{$value.name}}</div>
+                </div>
+            {{/each}}
+        </footer>
+
+</script>
+
+
+<script type="text/javascript">
+
+    qySoftInit("../../script/");
+
+    var tab = null;
+    var param = null;
+    var footerHeight = null;
+    var clock = '';
+
+    apiready = function () {
+        layui.use(['qyWin', 'template', 'auiTab', 'qyForm'], function () {
+            var qyWin = layui.qyWin;
+                
+            param = api.pageParam;
+            initFooter(param);
+
+            clock = window.setInterval(function () {
+                checkVersion();
+            }, 30000);
+        });
+    }
+
+    function checkVersion() {
+        //openWebWin("lijixiazai", "lijixiazai.html", "下载新版本", {});
+        layui.qyForm.qyajax("/f/app/version/getVersion", {}, function (ret) {
+            /*qyajax("Mobile/CheckVersion/getVersion", {}, function(data) {*/
+            if (ret.data.app_version_on == 'on' && ret.data.app_version != '' && ret.data.app_version != appVersion) {
+                if (shouldUpdate(appVersion, ret.data.app_version)) {
+                    var msg = "版本号: " + ret.data.app_version + "\n" + ret.data.app_tips;
+                    api.alert({
+                        title: '新版本更新',
+                        msg: msg
+                    }, function (ret1, err) {
+                        //clearInterval(clock);
+                        if (api.systemType == 'ios') {
+                            layui.qyWin.win("下载新版本", ret.data.ios_download_url, {});
+                        } else {
+                            layui.qyWin.win("下载新版本", ret.data.android_download_url, {});
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function shouldUpdate(appVersion, newVersion) {
+        var appVerArray = appVersion.split("/\./");
+        var newVerArray = newVersion.split("/\./");
+        if (appVerArray.length != newVerArray.length) {
+            return true;
+        }
+
+        if (appVerArray[0] < newVerArray[0]) {
+            return true;
+        }
+
+        if (appVerArray[1] < newVerArray[1]) {
+            return true;
+        }
+
+        if (appVerArray[2] < newVerArray[2]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function initFooter(param) {
+        layui.qyWin.win(param.menuGroup[0].name, param.menuGroup[0].url, {}, {});
+        //alert(JSON.stringify(param));
+        // var html = template('tpl-footer', param);
+        // $("body").append(html);
+
+
+        // tab = new auiTab({
+        //     element: document.getElementById("footer")
+        // }, function (ret) {
+
+        //     fnChange(ret.index - 1);
+
+        // });
+        // footerHeight = $api.offset(footer).h;
+
+        // fnChange(0);
+
+    }
+
+    function fnChange(index) {
+        for (var i = 0; i < param.menuGroup.length; i++) {
+            if (i == index) {
+                fnOpenFrame(index, true);
+            } else {
+                fnOpenFrame(i, false);
+            }
+        }
+    }
+
+
+    function fnOpenFrame(index, isOpen) {
+
+        if (isOpen) {
+            if (!param.menuGroup[index].isCreate) {
+
+
+                var rect = {
+                    x: 0,
+                    y: 0,
+                    w: 'auto',
+                     h: api.winHeight - footerHeight-10
+                };
+                layui.qyWin.win(param.menuGroup[index].name, param.menuGroup[index].url, rect, {});
+                //param.menuGroup[index].isCreate = 1;
+            }
+            else {
+                api.setFrameAttr({
+                    name: param.menuGroup[index].name,
+                    hidden: false,
+
+                });
+            }
+
+
+        } else {
+            api.setFrameAttr({
+                name: param.menuGroup[index].name,
+                hidden: true
+            });
+
+        }
+
+    }
+
+
+</script>
+</html>

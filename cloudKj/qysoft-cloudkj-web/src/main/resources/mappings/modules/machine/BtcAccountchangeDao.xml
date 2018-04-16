@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.machine.dao.BtcAccountchangeDao">
+    
+	<sql id="btcAccountchangeColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.change_money AS "changeMoney",
+		a.before_money AS "beforeMoney",
+		a.after_money AS "afterMoney",
+		a.commt AS "commt",
+		a.status AS "status",
+		a.ischeck AS "ischeck",
+		a.change_type AS "changeType",
+		a.money_type AS "moneyType",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		u.true_name AS "trueName"
+	</sql>
+	
+	<sql id="btcAccountchangeJoins">
+		LEFT JOIN user_userinfo u ON a.user_name = u.user_name
+	</sql>
+    
+	<select id="get" resultType="BtcAccountchange">
+		SELECT 
+			<include refid="btcAccountchangeColumns"/>
+		FROM btc_accountchange a
+		<include refid="btcAccountchangeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BtcAccountchange">
+		SELECT
+			<include refid="btcAccountchangeColumns"/>
+		FROM btc_accountchange a
+		<include refid="btcAccountchangeJoins"/>
+
+		<where>
+
+			<if test="remarks == 0">
+				a.change_type NOT IN (1,3)
+			</if>
+			<if test="ischeck != null and ischeck != ''">
+				AND a.ischeck = #{ischeck}
+			</if>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			<if test="moneyType != null and moneyType != ''">
+				AND a.money_type = #{moneyType}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name = #{userName}
+			</if>
+			<if test="createDateBegin != null and createDateBegin != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{createDateBegin}, '%Y-%m-%d')
+			</if>
+			<if test="createDateEnd != null and createDateEnd != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{createDateEnd}, '%Y-%m-%d')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getEchartsData" resultType="BtcAccountchange">
+		SELECT user_name,SUM(change_money) as "changeMoney",create_date FROM `btc_accountchange`  WHERE user_name = #{userName} AND change_type = '1' AND money_type = '2'
+		AND DATE_FORMAT(create_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{createDateBegin}, '%Y-%m-%d')
+		GROUP BY DATE_FORMAT(create_date, '%Y-%m-%d')
+		ORDER BY create_date asc
+	</select>
+	
+	<select id="findAllList" resultType="BtcAccountchange">
+		SELECT 
+			<include refid="btcAccountchangeColumns"/>
+		FROM btc_accountchange a
+		<include refid="btcAccountchangeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO btc_accountchange(
+			id,
+			user_name,
+			change_money,
+			before_money,
+			after_money,
+			commt,
+			status,
+			ischeck,
+			change_type,
+			money_type,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userName},
+			#{changeMoney},
+			#{beforeMoney},
+			#{afterMoney},
+			#{commt},
+			#{status},
+			#{ischeck},
+			#{changeType},
+			#{moneyType},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE btc_accountchange SET 	
+			user_name = #{userName},
+			change_money = #{changeMoney},
+			before_money = #{beforeMoney},
+			after_money = #{afterMoney},
+			commt = #{commt},
+			status = #{status},
+			ischeck = #{ischeck},
+			change_type = #{changeType},
+			money_type = #{moneyType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE btc_accountchange SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<select id="findBtcEarn" resultType="BtcAccountchange">
+		SELECT
+		a.id AS "id",
+		a.user_name AS "userName",
+		sum(a.change_money) AS "changeMoney",
+		a.commt AS "commt",
+		a.status AS "status",
+		a.change_type AS "changeType",
+		a.money_type AS "moneyType",
+		a.create_date AS "createDate",
+		u.true_name AS "trueName"
+	  	FROM btc_accountchange a
+		<include refid="btcAccountchangeJoins"/>
+		<where>
+			<if test="changeType != null and changeType != ''">
+				AND a.change_type = #{changeType}
+			</if>
+			<if test="moneyType != null and moneyType != ''">
+				AND a.money_type = #{moneyType}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND a.user_name = #{userName}
+			</if>
+			<if test="createDateBegin != null and createDateBegin != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') &gt;= DATE_FORMAT(#{createDateBegin}, '%Y-%m-%d')
+			</if>
+			<if test="createDateEnd != null and createDateEnd != ''">
+				AND DATE_FORMAT(a.create_date, '%Y-%m-%d') &lt;= DATE_FORMAT(#{createDateEnd}, '%Y-%m-%d')
+			</if>
+			AND a.change_type in(1,3) GROUP BY a.user_name ,a.change_type, DATE_FORMAT(a.create_date, '%Y-%m-%d')
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>

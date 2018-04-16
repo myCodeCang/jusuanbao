@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+    content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>比特币转余额</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../script/layer/css/layer-mobile.css"/>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+</head>
+
+<body class="bg-gray">
+    <header class="aui-bar aui-bar-nav home">
+        <a class="aui-pull-left aui-btn back" href="#">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title">比特币转余额</div>
+        <a href="" class="aui-pull-right aui-font-size-14"></a>
+    </header>
+    <div class="height-one"></div>
+
+    <div class="aui-content withdraw">
+        <p><span>BTC账户:</span>&nbsp;&nbsp;<span class="aui-text-danger"><span id="btcMoney"></span>&nbsp;BTC</span></p>
+        <ul class="aui-list aui-form-list">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        转换数量：
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="money" placeholder="请输入转换数量" onKeyUp="amount(this)" onchange="verifyAccount()">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        手&nbsp;续&nbsp; 费：
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="shouRecharge" readonly >
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        实际到账：
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="text" id="account" readonly placeholder="实际到账">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        密　　码：
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="password" id="password" placeholder="请输入支付密码">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <style>
+            .tieshi h3{color:#ff0000;}
+            .tieshi p{color:#ff0000;}
+        </style>
+        <div class="aui-content tieshi" >
+            <h3>贴士：</h3>
+            <p id = "">最低转换额度为:<span id="least"></span></p>
+            
+        </div>
+    <div class="blank_15"></div>
+    <div class="blank_15"></div>
+    <style>
+    .tieshi h3{color:#ff0000;}
+    .tieshi p{color:#ff0000;}
+</style>
+<!--<div class="aui-content tieshi" >-->
+    <!--<h3>贴士：</h3>-->
+    <!--<p id = "">转换手续费为:<span id="least"></span></p>-->
+    <!---->
+    <!--</div>-->
+    <div class="aui-content withdraw-btn">
+        <div class="aui-btn aui-btn-block" onclick="toChange()">确定</div>
+    </div>
+</body>
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    var btcMoney;
+    var btcPrice;
+    var txFlag = false;
+    var shouRecharge;
+
+    //apicloud 准备完成
+        layui.use(['qyWin', 'qyForm', 'qyShop', 'layer'], initpage);
+
+    function initpage() {
+        loadData();
+    };
+
+    function loadData() {
+        layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function (data) {
+            $("#btcMoney").html(data.userinfo.money6);
+            btcMoney = data.userinfo.money6;
+
+        });
+        getBtcNowPrice();
+    }
+
+
+    function verifyAccount() {
+        getBtcNowPrice();
+        var money = $("#money").val();
+        if (!/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(money)) {
+            layui.qyWin.toast('数量输入错误');
+            return;
+        }
+        $("#account").val((money*(1-shouRecharge)*btcPrice).toFixed(2)+"元");
+    }
+
+
+    function getBtcNowPrice() {
+        layui.qyForm.qyajax("/f/app/machine/getBtcChangeMessage", {}, function (data) {
+            $("#shouRecharge").val(data.shouRecharge);
+            $("#least").html(data.btclow+"元");
+            shouRecharge = data.shouRecharge;
+
+        });
+       
+        layui.qyForm.qyajax("/f/machine/getBtcNowPrice", {}, function(data) {
+            btcPrice = data.price;
+        });
+        // $.ajax({
+        //     url: 'https://www.okcoin.cn/api/v1/ticker.do?symbol=btc_cny',
+        //     type: 'GET', //GET
+        //     async: true, //或false,是否异步
+        //     timeout: 5000, //超时时间
+        //     dataType: 'json', //返回的数据格式：json/xml/html/script/jsonp/text
+        //     success: function (data, textStatus, jqXHR) {
+        //         btcPrice = data.ticker.last;
+        //     },
+        //     error: function (xhr, textStatus) {
+        //         layui.qyWin.toast("获取最新汇率失败,请您稍后再试。");
+        //     }
+        // })
+    }
+
+     //限制输入金额
+        function amount(th){
+            var regStrs = [
+                ['^0(\\d+)$', '$1'], //禁止录入整数部分两位以上，但首位为0
+                ['[^\\d\\.]+$', ''], //禁止录入任何非数字和点
+                ['\\.(\\d?)\\.+', '.$1'], //禁止录入两个以上的点
+                ['^(\\d+\\.\\d{10}).+', '$1'] //禁止录入小数点后两位以上
+            ];
+            for(var i=0; i<regStrs.length; i++){
+                var reg = new RegExp(regStrs[i][0]);
+                th.value = th.value.replace(reg, regStrs[i][1]);
+            }
+        }
+
+    function toChange() {
+
+        var account = $("#account").val();
+        var money = $("#money").val();
+        var password = $("#password").val();
+
+        if(txFlag){
+            return;
+        }
+        if(account <= 0){
+            layui.qyWin.toast("转换金额过低");
+            return;
+        }
+        if (!/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(money)) {
+            layui.qyWin.toast('数量输入错误');
+            return;
+        }
+        txFlag = true;
+
+        var data = {
+            account : account,
+            money : money,
+            password : password
+        };
+
+        layui.layer.open({
+            content: '您确定要转换吗？'
+            ,btn: ['确认', '取消']
+            ,yes: function(index){
+                layui.qyForm.qyajax("/f/app/machine/btcChangeRmb", data, function (data) {
+                    layui.qyWin.toast(data.info);
+                    setTimeout(function(){
+                        initpage();
+                        $("#account").val("");
+                        $("#money").val("");
+                       $("#password").val("");
+                       setTimeout("layui.qyWin.closeWin(true)",2500);
+                    },1000);
+                    txFlag = false;
+                },function(){
+                    initpage();
+                    txFlag = false;
+                });
+                layui.layer.close(index);
+            }
+        });
+
+}
+
+
+</script>
+
+</html>

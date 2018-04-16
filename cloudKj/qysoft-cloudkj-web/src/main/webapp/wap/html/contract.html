@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>合约</title>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<script src="../js/Progress.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+		<script src="../script/other/Progress.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 下拉刷新样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui-pull-refresh.css" />
+
+	</head>
+	<body class="bg-gray" >
+		<header class="aui-bar aui-bar-nav home">
+			<div class="">合约</div>
+		</header>
+		<div id="contentBody">
+		<div class="height-one"></div>
+		<div class="aui-content contract-img aui-margin-b-15">
+			<img src="../image/heyue-banner.png"/>
+		</div>
+		<div class="aui-content contract-power aui-margin-b-15"  onclick="powerShow()">
+			<div class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-3">
+						<span>电费</span>
+					</div>
+					<div class="aui-col-xs-5">
+						<span id="powerMoney"></span>
+					</div>
+					<div class="aui-col-xs-4">
+						<div class="aui-btn aui-btn-outlined">立即购买</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="temp_mining">
+
+		</div>
+		<!--购买电费-->
+		<div class="aui-content power-tan" id="powerTan">
+			<div class="power-tan-detail">
+				<h3>电量购买</h3>
+				<div class="power-tan-detail-one">
+					<p><span>电　　价 :</span>&nbsp;&nbsp;<span class="aui-text-danger" id="powerMoney2"></span></p>
+					<p><span>当前电量 :</span>&nbsp;&nbsp;<span id="money5"></span></p>
+					<p><span>当前余额 :</span>&nbsp;&nbsp;<span id="money"></span></p>
+					<div class="power-tan-detail-two">
+						<span>充值电量 :</span>
+						<input type="text" placeholder="请输入购买电量" id="powerNum"/>
+					</div>
+				</div>
+				<div class="power-tan-detail-btn">
+					<div class="aui-grid">
+						<div class="aui-row">
+							<div class="aui-col-xs-6">
+								<div class="aui-btn" onclick="powerHide()">取消</div>
+							</div>
+							<div class="aui-col-xs-6">
+								<div class="aui-btn" onclick="buyPower()">购买</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		</div>
+		<footer class="aui-bar aui-bar-tab ju-footer">
+				<div class="aui-bar-tab-item  " onclick="openWin('index')">
+					<i class="ico-home"></i>
+					<div class="aui-bar-tab-label">首页</div>
+				</div>
+				<div class="aui-bar-tab-item" onclick="openKeFu()">
+								<i class="ico-kefu"></i>
+								<div class="aui-bar-tab-label">客服</div>
+							</div>
+				<div class="aui-bar-tab-item heyue-bot active" onclick="openWin('contract')">
+					<i class="ico-heyue"></i>
+					<div class="aui-bar-tab-label">合约</div>
+				</div>
+				<div class="aui-bar-tab-item" onclick="openWin('earnings')">
+					<i class="ico-shouyi"></i>
+					<div class="aui-bar-tab-label">收益</div>
+				</div>
+				<div class="aui-bar-tab-item" onclick="openWin('my')">
+					<i class="ico-my"></i>
+					<div class="aui-bar-tab-label">我的</div>
+				</div>
+		</footer>
+	</body>
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+	<script type="text/html" id="tpl_miningList">
+	{{each machineList}}
+		<div class="aui-content contract aui-margin-b-15">
+
+			<span class="{{$value.startDate < nowDate ?'xianhuo':'qihuo'}}">{{$value.startDate < nowDate ?'现货':'期货'}}</span>
+			<a href="contract-detail.html?id={{$value.id}}"><div class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-8 contract-one">
+						<span>{{$value.name}}</span>
+						<div class="aui-grid">
+							<div class="aui-row">
+								<div class="aui-col-xs-4">
+									<span>{{$value.money}}元</span>
+									<span>单价</span>
+								</div>
+								<div class="aui-col-xs-4">
+									<span>{{$value.message}}TH/s</span>
+									<span>算力</span>
+								</div>
+								<div class="aui-col-xs-4">
+									<span>{{$value.powerExpend}}度/TH</span>
+									<span>功耗</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="aui-col-xs-4 contract-two">
+						<div style="width:80px;height:80px;margin:0 auto;">
+							<canvas id="canvas_{{$index}}" width="80" height="80"></canvas>
+						</div>
+						<div class="aui-btn aui-btn-outlined">立即购买</div>
+					</div>
+				</div>
+			</div></a>
+			<h3>
+				<img src="../image/dian-orange.png"/>&nbsp;&nbsp;
+				<span>每日收益：<span>{{$value.earnings}}</span>  BTC/THs</span>
+			</h3>
+		</div>
+		{{/each}}
+	</script>
+	<script type="text/javascript">
+	//框架初始化
+    qySoftInit("../../static/qyScript/web/");
+	var powerMoney = 0;
+	var buyFlag = false;
+	//apicloud 准备完成
+
+	layui.use(['qyWin','qyForm','qyShop','template'], initpage);
+
+	function initpage(){
+
+		userInfo();
+		loadData();
+		 //下拉刷新
+     //    layui.qyWin.setRefreshHeaderAUI($("#contentBody")[0],function(){
+  			// userInfo();
+     //        loadData(true);
+     //    });
+
+
+	}
+
+	function buyPower(){
+
+		var powerNum = $("#powerNum").val();
+            if (!/^[1-9][0-9]*$/.test(powerNum)) {
+                layui.qyWin.toast('购买数量必须是大于0的整数');
+                return;
+            }
+            if(buyFlag){
+                return;
+            }
+            buyFlag = true;
+            layui.qyForm.qyajax("/f/app/machine/buyPower", {powerNum:powerNum}, function (data) {
+                layui.qyWin.toast("购买成功");
+                powerHide();
+                $("#powerNum").val("");
+                setTimeout(function () {
+                	userInfo();
+                    buyFlag = false;
+                },2500);
+            },function (error) {
+            	initpage();
+                buyFlag = false;
+            });
+	}
+
+
+	function userInfo(){
+		layui.qyForm.qyajax("/f/machine/userInfo", {}, function (data) {
+                $("#money").text(data.userInfo.money +" 元");
+                $("#money5").text(data.userInfo.money5 + " 度");
+            });
+	}
+
+	function loadData(hdProcess){
+		layui.qyForm.qyajax("/f/app/machine/machineList", {}, function(data) {
+
+			$("#powerMoney").html("单价："+data.powerMoney+"元/度");
+			$("#powerMoney2").html(data.powerMoney+"元/度");
+			var html = template('tpl_miningList',data);
+			$("#temp_mining").html(html);
+	
+			for(var i=0; i<data.machineList.length;i++){
+				var num = (100*data.machineList[i].nowHashrate/data.machineList[i].allHashrate);
+				var p1 = new Progress({
+			        el:'canvas_'+i,//canvas元素id
+			        deg:num,//绘制角度
+			        timer:15,//绘制时间
+			        lineWidth:8,//线宽
+			        lineBgColor:'#e2e2e2',//底圆颜色
+			        lineColor:'#ff7000',//动态圆颜色
+			        textColor:'#ff7000',//文本颜色
+			        fontSize:25,//字体大小
+			        circleRadius:40//圆半径
+			    });
+			}
+			// new Progress().renderOne('canvas2',80,5,80);
+			// new Progress().renderOne('canvas3',80,5,70);
+		},function(){},{sync:hdProcess});
+	}
+
+	function openWin(name){
+		layui.qyWin.win(name,name+".html",{},{reload:true});
+	}
+
+	function powerShow(){
+		$("#powerTan").css({'display':'flex'});
+	}
+
+	function powerHide(){
+		$("#powerTan").hide();
+	}
+
+	function openKeFu(){
+		layui.qyWin.win("kefu","https://ssg.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=923507&configID=41479&jid=7667298193&s=1",{});
+	
+	}
+
+	function reload(){
+		initpage();
+	}
+	
+	</script>
+
+</html>

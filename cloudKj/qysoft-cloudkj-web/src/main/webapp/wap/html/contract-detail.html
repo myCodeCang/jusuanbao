@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>购买合约</title>
+		<link rel="stylesheet" type="text/css" href="../css/aui/layer-mobile.css"/>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<link rel="stylesheet" href="../css/aui/layer-mobile.css">
+	</head>
+	<body class="bg-gray">
+		<header class="aui-bar aui-bar-nav home">
+			<a class="aui-pull-left back" href="#">
+		        <span class="aui-iconfont aui-icon-left"></span>
+		    </a>
+			<div class="aui-title">订单结算</div>
+		</header>
+		<div class="height-one"></div>
+		<div class="aui-content close">
+			<div class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-4" id="img">
+
+					</div>
+					<div class="aui-col-xs-8">
+						<span id="name"></span>
+						<span id="money"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="aui-content goumai aui-margin-b-10">
+			<div class="aui-list">
+				<div class="aui-list-item">
+					<div class="aui-list-item-inner" >
+		                <div class="aui-list-item-title" style="margin-left: 35px;">算力数量</div>
+		                <div class="aui-list-item-right" style="margin-right: 35px;">
+		            		<span class="jian" onclick="subNum()">-</span><input type="number" value="1" id="num" onchange="countMoney()"  /><span class="jia" onclick="addNum()">+</span>
+		            	</div>
+		           </div>
+				</div>
+			</div>
+		</div>
+		<div class="aui-content close-detail">
+			<h3>合约详情</h3>
+			<div class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-6">
+						<span>合约单位：</span><span id="message"></span>
+					</div>
+					<div class="aui-col-xs-6">
+						<span>功耗：</span><span id="pwerExcept"></span>
+					</div>
+				</div>	
+				<div class="aui-row">
+					<div class="aui-col-xs-6">
+						<span>剩余算力：</span><span class="aui-text-danger" id="nowHashrate"></span>
+					</div>
+					<div class="aui-col-xs-6">
+						<span>电费：</span><span id="powerMoney"></span>
+					</div>
+				</div>	
+				<div class="aui-row">
+					<div class="aui-col-xs-12">
+						<span>管理费：</span><span id="manageMoney"></span>
+					</div>
+					
+				</div>	
+				<div class="aui-row">
+					<div class="aui-col-xs-12">
+						<span>最小购买份数：</span><span>1TH/s</span>
+					</div>
+				</div>	
+				<div class="aui-row">
+					<div class="aui-col-xs-12">
+						<span>转为算力时间：</span><span class="aui-text-danger aui-font-size-16" id="startTime"></span>
+					</div>
+				</div>	
+				<div class="aui-row">
+					<div class="aui-col-xs-12">
+						<span>合约周期：</span><span>永久至连续10天不收益为止</span>
+					</div>
+				</div>
+			</div>
+			<p>( 该合约每天每算力费用为：<span id="powerExceptMoney"></span>元 )</p>
+		</div>
+
+		<div class="aui-content close-hetong" id="xieyi">
+			<label><input class="aui-radio" type="checkbox" checked="" id='agreement'> 我已阅读并同意：<a href="#" onclick="showDetail()" id="name2"></a></label>
+		</div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="aui-content close-btn" id="dingdanbut">
+			<div class="aui-grid">
+				<div class="aui-row">
+					<div class="aui-col-xs-7">
+						合计：<span id="needMoney"></span>
+					</div>
+					<div class="aui-col-xs-5" onclick="buy()">
+						<div class="aui-btn aui-btn-block">提交订单</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 公告弹框 -->
+		<div class="aui-content gonggao-tan" style="display:none" id="gonggaoTan">
+				<div class="gonggao-tan-detail">
+						<h3>合约详情<img src="../image/guanbi.png" onclick="gonggaoHide()"></h3>
+						<div class="gonggao-tan-detail-one" id="detail">
+
+						</div>
+				</div>
+		</div>
+		<!--合约弹框-->
+		<!-- <div class="aui-content contract-popout">
+			<div class="contract-popout-detail">
+				<p id="detail">
+				
+
+				</p>
+			</div>
+			<div class="aui-btn aui-btn-block" onclick="heyeuHide()">确认阅读</div>
+		</div> -->
+		<div class="mask-one"></div>
+	</body>
+	<script type="text/javascript">
+	//框架初始化
+    qySoftInit("../../static/qyScript/web/");
+	var powerMoney = 0;
+	var buyFlag = false;
+	var machineMoney;
+	var machineId;
+	var isIOS=false;
+	//apicloud 准备完成
+
+	layui.use(['qyWin','qyForm','qyShop','template','layer'], initpage);
+
+	function initpage(){
+		machineId = layui.qyForm.GetQueryString("id");
+		loadData(machineId);
+
+	}
+
+	function loadData(id){
+		layui.qyForm.qyajax("/f/app/machine/getMiningMachine", {id:id}, function (data) {
+			$("#detail").html(data.miningInfo.remarks);
+				$("#img").html('<img src="'+CONS_IMG_URL+data.miningInfo.image+'"/>');
+                $("#name").html(data.miningInfo.name);
+                $("#name2").html(data.miningInfo.name);
+                $("#nowHashrate").text(data.miningInfo.nowHashrate);
+                machineMoney = data.miningInfo.money;
+                $('#money').text(machineMoney);
+                $("#pwerExcept").html(data.miningInfo.powerExpend +"度/TH");
+                $("#powerMoney").html(data.powerMoney+"元/度");
+                $("#manageMoney").text(data.manageMoney*100 + "%");
+                $("#message").text(data.miningInfo.message);
+                $("#startTime").text((data.miningInfo.startDate).substring(0,10));
+                $("#powerExceptMoney").text((data.powerMoney*data.miningInfo.powerExpend).toFixed(2));
+                countMoney();
+        });
+	}
+
+	function showDetail(){
+		$('#gonggaoTan').css({'display':'flex'});
+		$("body").eq(0).css({'overflow':'hidden'});
+	}
+
+	function gonggaoHide(){
+		$('#gonggaoTan').hide();
+		$("body").eq(0).css({'overflow':'auto'});
+	}
+
+	function addNum(){
+		var num = $('#num').val();
+		if (!/^[1-9][0-9]*$/.test(num)) {
+           layui.qyWin.toast('购买数量必须是大于0的整数');
+            $('#num').val('1');
+		}else{
+			$('#num').val(num*1+1);
+		}
+
+		countMoney();
+	}
+
+	function subNum(){
+		var num = $('#num').val();
+		if (!/^[1-9][0-9]*$/.test(num)) {
+           layui.qyWin.toast('购买数量必须是大于0的整数');
+            $('#num').val('1');
+		}else if(num > 1){
+			$('#num').val(num*1-1);
+		}
+		countMoney();
+	}
+
+	function countMoney(){
+		 var num = $('#num').val();
+		 if (!/^[1-9][0-9]*$/.test(num)) {
+           layui.qyWin.toast('购买数量必须是大于0的整数');
+            $('#num').val('1');
+            num = 1;
+		}
+
+        $("#needMoney").text((machineMoney*num).toFixed(2) +"元");
+	}
+
+	function buy(){
+		 var num = $('#num').val();
+            if (!/^[1-9][0-9]*$/.test(num)) {
+               layui.qyWin.toast('购买数量必须是大于0的整数');
+                return;
+            }
+            if(!machineId){
+                layui.qyWin.toast('请先选择一个产品');
+                return;
+			}
+            if(!$('#agreement').is(':checked')) {
+                layui.qyWin.toast('请先勾选合约协议');
+                return;
+            }
+            if(buyFlag) {
+                return;
+            }
+            layui.layer.open({
+                content: '您确定要购买吗？'
+                ,btn: ['确认', '取消']
+                ,yes: function(index){
+
+                    buyFlag = true;
+                    layui.qyForm.qyajax("/f/app/machine/buy", {num:num,machineId:machineId}, function (data) {
+                        layui.qyWin.toast(data.info);
+
+                        setTimeout(function () {
+                            buyFlag = false;
+                            setTimeout("layui.qyWin.closeWin(true)",1000);
+                        },2500);
+                    },function (error) {
+                    	initpage();
+                        buyFlag = false;
+                    });
+                    layui.layer.close(index);
+                }
+            });
+
+	}
+
+
+	$('#num').on('focus',function(){
+		  countMoney();
+
+			$('#xieyi').css({'z-index':-1});
+  			$('#dingdanbut').css({'z-index':-1});
+
+	  	
+	})
+	$('#num').on('blur',function(){
+		 countMoney();
+
+			$('#xieyi').css({'z-index':9999999});
+			$('#dingdanbut').css({'z-index':99999999});
+
+	})
+
+	// function heyueShow(){
+	// 		$('.contract-popout').eq(0).animate({bottom:0})
+	// 		$('.mask-one').eq(0).show();
+	// 	}
+	// function heyeuHide(){
+	// 	$('.contract-popout').eq(0).animate({bottom:"-1000px"});
+	// 	$('.mask-one').eq(0).hide();
+		
+	// }
+
+	</script>
+</html>

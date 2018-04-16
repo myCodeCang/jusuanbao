@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>收益</title>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+	</head>
+	<body class="bg-gray">
+		<header class="aui-bar aui-bar-nav home">
+			<div class="">收益</div>
+		</header>
+		<div class="height-one"></div>
+		<div id="temp_shouyi">
+
+		</div>
+
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<footer class="aui-bar aui-bar-tab ju-footer">
+				<div class="aui-bar-tab-item" onclick="openWin('index')">
+					<i class="ico-home"></i>
+					<div class="aui-bar-tab-label">首页</div>
+				</div>
+				<div class="aui-bar-tab-item" onclick="openKeFu()">
+					<i class="ico-kefu"></i>
+					<div class="aui-bar-tab-label">客服</div>
+				</div>
+				<div class="aui-bar-tab-item heyue-bot" onclick="openWin('contract')">
+					<i class="ico-heyue"></i>
+					<div class="aui-bar-tab-label">合约</div>
+				</div>
+				<div class="aui-bar-tab-item active" onclick="openWin('earnings')">
+					<i class="ico-shouyi-one"></i>
+					<div class="aui-bar-tab-label">收益</div>
+				</div>
+				<div class="aui-bar-tab-item   " onclick="openWin('my')">
+					<i class="ico-my"></i>
+					<div class="aui-bar-tab-label">我的</div>
+				</div>
+		</footer>
+	</body>
+	<script type="text/html" id='tpl_shouyi'>
+		{{if page.count == 0}}
+		<div class="aui-content earnings-one aui-margin-t-15" onclick="openWin('contract')">
+			<img src="../image/jia.png"/>
+			<p>暂无收益，请去购买合约</p>
+		</div>
+		{{/if}}
+		{{each page.list}}
+		<div class="aui-content earnings aui-margin-t-15">
+				<span class="{{$value.miningMachine.startDate < nowDate ?'xianhuo':'qihuo'}}">{{$value.miningMachine.startDate < nowDate ?'现货':'期货'}}</span>
+				<div class="aui-grid">
+					<div class="aui-row">
+						<div class="aui-col-xs-4">
+							<img src="../image/shangping.png"/>
+						</div>
+						<div class="aui-col-xs-8">
+							<p><span>合约类型：</span><span>{{$value.miningMachine.name}}合约</span></p>
+							<p><span>购买算力：</span><span>{{$value.hashrate}}TH/s</span></p>
+							<p><span>发放次数：</span><span>{{$value.count}}次</span></p>
+							<p><span>累计收益：</span><span>{{$value.amountEarnings,10 | numberFormat}}  BTC</span></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		{{/each}}
+	</script>
+	<script type="text/javascript">
+	//框架初始化
+    qySoftInit("../../static/qyScript/web/");
+	//apicloud 准备完成
+
+	layui.use(['qyWin','qyForm','qyShop','template'], initpage);
+
+
+	function initpage(){
+
+		loadData();
+	};
+
+	function loadData(hdProcess){
+		layui.qyForm.qyajax("/f/app/machine/getMiningList", {}, function(data) {
+
+			var html = template('tpl_shouyi',data);
+			$("#temp_shouyi").html(html);
+
+		},function(){},{sync:hdProcess});
+	}
+
+	function openWin(name){
+		layui.qyWin.win(name,name+".html",{},{reload:true});
+	}
+
+	function openKeFu(){
+		layui.qyWin.win("kefu","https://ssg.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=923507&configID=41479&jid=7667298193&s=1",{});
+	
+	}
+	</script>
+</html>

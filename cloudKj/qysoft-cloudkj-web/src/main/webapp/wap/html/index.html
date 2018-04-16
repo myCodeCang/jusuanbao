@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>首页</title>
+
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+		<link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/swiper/swiper.min.css"/>
+		<script src="../js/swiper.min.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script>$.noConflict();</script>
+		<script src="../js/jq22.js"></script>
+	</head>
+	<body class="bg-gray">
+		<div class="aui-content">
+			<div class="swiper-container">
+		        <div class="swiper-wrapper" id="temp-index">
+
+		            <!-- <div class="swiper-slide"><img src="../image/banner2.png"></div> -->
+		        </div>
+		        <div class="swiper-pagination"></div>
+		    </div>
+		</div>
+		<div class="aui-content home-gonggao aui-margin-b-10">
+			<span><img src="../image/ico-gonggao.png"/></span>
+			<ul class="news_li" id="temp-title">
+				 <li class="aui-ellipsis-1"><a href="#" ></a></li>
+			</ul>
+			<ul class="swap"></ul>
+		</div>
+		<div class="aui-content home-tuisong aui-margin-b-10">
+			<h3><img src="../image/tuisong.png"/><span>推送产品</span></h3>
+			<div class="tuisong-detail">
+				<div id="temp-machine">
+
+					<!-- <div class="home-tuisong-one">
+						<img src="../image/chanping.png"/>
+						<span>S9合约</span>
+					</div>
+					<div class="home-tuisong-one">
+						<img src="../image/chanping.png"/>
+						<span>S9合约</span>
+					</div> -->
+				</div>
+			</div>
+		</div>
+		<div class="aui-content home-tuijian">
+			<h3><img src="../image/zixun.png"/><span>为您推荐</span></h3>
+			<ul class="aui-list aui-media-list" id="temp-gonggao">
+
+
+		    </ul>
+				<div class="jiazai-box aui-content"></div>
+		</div>
+
+		<!-- 公告弹框 -->
+		<div class="aui-content gonggao-tan" style="display:none" id="gonggaoTan">
+				<div class="gonggao-tan-detail">
+						<h3>公告详情<img src="../image/guanbi.png" onclick="gonggaoHide()"></h3>
+						<div class="gonggao-tan-detail-one">
+								<p id="detail"></p>
+						</div>
+				</div>
+		</div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+		<div class="blank_15"></div>
+					<footer class="aui-bar aui-bar-tab ju-footer">
+							<div class="aui-bar-tab-item active " onclick="openWin('index')">
+								<i class="ico-home-one"></i>
+								<div class="aui-bar-tab-label">首页</div>
+							</div>
+							<div class="aui-bar-tab-item" onclick="openKeFu()">
+								<i class="ico-kefu"></i>
+								<div class="aui-bar-tab-label">客服</div>
+							</div>
+							<div class="aui-bar-tab-item heyue-bot" onclick="openWin('contract')">
+								<i class="ico-heyue"></i>
+								<div class="aui-bar-tab-label">合约</div>
+							</div>
+							<div class="aui-bar-tab-item" onclick="openWin('earnings')">
+								<i class="ico-shouyi"></i>
+								<div class="aui-bar-tab-label">收益</div>
+							</div>
+							<div class="aui-bar-tab-item" onclick="openWin('my')">
+								<i class="ico-my"></i>
+								<div class="aui-bar-tab-label">我的</div>
+							</div>
+				</footer>
+	</body>
+
+
+	<script type="text/html" id="tpl-index">
+		{{each list}}
+				<div class="swiper-slide"><img src="{{imgUrl +$value.photo}}"></div>
+		{{/each}}
+	</script>
+	<script type="text/html" id="tpl-title">
+		{{each page.list}}
+			<li class="aui-ellipsis-1" onclick="showGongGao({{$value.id}})"><a href="#" >{{$value.title}}</a></li>
+		{{/each}}
+	</script>
+	<script type="text/html" id="tpl-machine">
+		{{each machineList}}
+		<a href="contract-detail.html?id={{$value.id}}">
+			<div class="home-tuisong-one">
+			<img src="{{imgUrl + $value.image}}"/>
+			<span>{{$value.name}}</span>
+			</div>
+		</a>
+		{{/each}}
+	</script>
+	<script type="text/html" id="tpl-gonggao">
+		{{each page.list}}
+	<li class="aui-list-item">
+					<a href="messageDetail.html?id={{$value.id}}">
+					<div class="aui-media-list-item-inner">
+							<div class="aui-list-item-inner">
+									<div class="aui-list-item-text">
+											<div class="aui-list-item-title aui-ellipsis-2 aui-font-size-14">{{$value.description}}</div>
+									</div>
+									<div class="aui-info aui-padded-b-0">
+											<div class="aui-info-item aui-font-size-12">
+												 <span class=" aui-font-size-14">{{$value.updateDate | dateFormat}}</span>
+											</div>
+									</div>
+							</div>
+							<div class="aui-list-item-media" style="width:33%;">
+									<img src="{{imgUrl +$value.image}}">
+							</div>
+					</div>
+					</a>
+			</li>
+			{{/each}}
+		</script>
+
+
+	<script type="text/javascript">
+	//框架初始化
+    qySoftInit("../../static/qyScript/web/");
+	//apicloud 准备完成
+
+	layui.use(['qyWin','qyForm','qyShop','template'], initpage);
+
+
+
+
+	function initpage(){
+		qyForm = layui.qyForm;
+
+		loadData();
+		qyForm.pageajax(loadMessage, {
+			"pageNo": "0",
+			"pageSize": "5",
+			"categoryId":61888
+		});
+
+	};
+
+	function loadData(){
+			//加载首页轮播图
+			layui.qyForm.qyajax("/f/app/machine/findByKeyWord",{"keyWord":"index"},function(data){
+					data['imgUrl'] = CONS_IMG_URL;
+					var html = template("tpl-index",data);
+					$("#temp-index").html(html);
+					jiazai();
+			});
+
+			//加载公告
+			layui.qyForm.qyajax("/f/webArticle/findByCategory",{"categoryId":61893},function(data){
+					var html = template("tpl-title", data);
+          			$("#temp-title").html(html);
+			});
+			//加载合约
+			layui.qyForm.qyajax("/f/machine/machineList", {top:3}, function (data) {
+					data['imgUrl'] = CONS_IMG_URL;
+					var html = template("tpl-machine", data);
+					$("#temp-machine").html(html);
+			});
+
+
+	}
+
+
+	function showGongGao(id){
+
+        layui.qyForm.qyajax("/f/webArticle/detail",{"articleId":id},function (data) {
+            $("#detail").html(data.article.content);
+            $("#more").hide()
+        });
+		$('#gonggaoTan').css({'display':'flex'});
+	}
+	function gonggaoHide(){
+		$('#gonggaoTan').hide();
+	}
+
+	function loadMessage(param,callback){
+		//加载资讯
+		layui.qyForm.qyajax("/f/webArticle/findByCategory",param,function (data) {
+			var pageData = data.page;
+			data['imgUrl'] = CONS_IMG_URL;
+				var html = template("tpl-gonggao",data);
+				$("#temp-gonggao").append(html);
+				if(callback){
+					callback(pageData);
+				}
+
+		});
+	}
+
+	function openWin(name){
+
+			layui.qyWin.win(name,name+".html",{},{reload:true});
+	}
+	function jiazai(){
+		var swiper = new Swiper('.swiper-container', {
+			pagination: '.swiper-pagination',
+			paginationClickable: true,
+			autoplay:2000,
+			loop:true,
+			autoplayDisableOnInteraction : false
+		});
+	}
+	function openKeFu(){
+		layui.qyWin.win("kefu","https://ssg.livechatvalue.com/chat/chatClient/chatbox.jsp?companyID=923507&configID=41479&jid=7667298193&s=1",{});
+	
+	}
+
+	</script>
+</html>

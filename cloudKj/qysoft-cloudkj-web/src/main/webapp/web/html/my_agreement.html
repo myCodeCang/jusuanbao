@@ -1,0 +1,791 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>聚算宝</title>
+		<link href="../css/base.css?v=1.5" rel="stylesheet">
+		<link href="../css/index.css?v=1.6" rel="stylesheet">
+		<meta name="format-detection" content="telephone=no">
+		<script type="text/javascript" src="../script/jquery.js"></script>
+		<script type="text/javascript" src="../script/echarts.min.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+		<script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+		<script type="text/javascript" src="../script/highcharts.js"></script>
+		<script type="text/javascript" src="../script/main.js?v=1.5"></script>
+		<script type="text/javascript" src="../script/login.js"></script>
+		<style>
+			.cal-4{
+				line-height: 40px;
+			}
+			.cal-4 span{
+				width:130px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="head">
+			<div class="twonav">
+				<div class="wrapper"><img src="../image/logo.png?v=1.4" class="fl"><span class="fr"><a href="../index.html">首页</a>
+  	<!-- <a href="deal.html">交易</a> --><a href="hashrate.html" class="on">算力</a><a href="pool.html">矿池</a><a href="message.html">资讯</a><a href="service.html">服务</a><a href="about.html">关于</a></span>
+				</div>
+
+			</div>
+			<div class="subNavBox">
+				<div class="container">
+					<ul class="subNav" style="min-width: 400px;">
+						<li class="subNavItem ">
+							<a href="hashrate.html" >合约首页</a>
+						</li>
+						<li class="subNavItem ">
+							<a href="javascript:void(0)" onclick="loginGo('agreement')">合约</a>
+						</li>
+						<li class="subNavItem subNavItem_current">
+							<a href="javascript:void(0)" onclick="loginGo('my_agreement')">我的算力</a>
+						</li>
+						<!--<li class="subNavItem">-->
+							<!--<a href="javascript:void(0)" id="status" onclick="loginOut()">注销</a>-->
+						<!--</li>-->
+					</ul>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<!--内容-->
+
+		<div class="bgf6 my-calculation">
+			<div class="wrapper clearfix">
+				<div class="w486 fl">
+					<div class="cal-1">
+						<a name="anchor"></a>
+						<h3 class="cal-h3 f18 bold col555 relative">基本信息<i class="absolute"></i></h3>
+						<div class="cal-basinfo bakfff">
+							<p><span class="f16 col888">姓名</span><em id="trueName"></em></p>
+							<p class="mt15"><span class="f16 col888">手机</span><em id="mobile"></em></p>
+							<p class="mt15"><span class="f16 col888">账户余额</span><em id="money" ></em></p>
+							<p class="mt15"><span class="f16 col888">BTC余额</span><em id="money6"></em>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#00a0e9;cursor: pointer;"  onclick="tanTiXian()">(点击转换)</span></p>
+							<p class="mt15"><span class="f16 col888">电量余额</span><em id="money5"></em>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#00a0e9;cursor: pointer;" onclick="tanPower()">(点击充电)</span></p>
+							<p class="mt15"><span class="f16 col888">BTC提现</span><em id="money" ></em><span style="color:#00a0e9;cursor: pointer;"  onclick="downApp()">(点击扫码安装APP)</span></p>
+						</div>
+					</div>
+					<div class="mt20">
+						<h3 class="cal-h3 f18 bold col555 relative">收款信息<i class="absolute"></i></h3>
+						<div class="cal-cashinfr bakfff">
+							<p class="clearfix"><span class="f16 col888 fl">开户行</span><em class="fl" id="kaihuBank"></em></p>
+							<p class="mt15 clearfix"><span class="f16 col888 fl">账户</span><em class="fl" id="bankNum"></em></p>
+							<p class="mt15 clearfix"><span class="f16 col888 fl">户名</span><em class="fl" id="bankUserName"></em></p>
+							<p class="mt15 clearfix"><span class="f16 col888 fl">打款备注</span><em class="fl" id="message"></em></p>
+						</div>
+					</div>
+				</div>
+				<style>
+					.absolute{
+						cursor: pointer;}
+					.tian-one{top:70px;right:60px;width:50px;height:27px;line-height:27px;font-size:15px;text-align: center;border-radius:8px;border:1px solid #ddd;z-index:99;}
+					.tian-two{top:70px;right:120px;width:50px;height:27px;line-height:27px;font-size:15px;text-align: center;border-radius:8px;border:1px solid #ddd;z-index:99;}
+					.tian-three{top:70px;right:180px;width:50px;height:27px;line-height:27px;font-size:15px;text-align: center;border-radius:8px;border:1px solid #ddd;z-index:99;}
+					.tian-active{border-color:#ff7000;color:#ff7000;}
+
+				</style>
+				<div class="w694 fr">
+					<div class="cal-3 relative">
+						<h3 class="cal-h3 f18 bold col555 relative">近期收益<i class="absolute"></i></h3>
+						<div id="earnTab">
+						<div class="absolute tian-one  day" onclick="qiehuan(30)" >30天</div>
+						<div class="absolute tian-two day" onclick="qiehuan(20)">20天</div>
+						<div class="absolute tian-three tian-active day" onclick="qiehuan(10)">10天</div></div>
+						<div class="cal-repro bakfff" style="height: 365px" id="main">
+							<!--没有数据-->
+							<div id="wu"  class="cla-nopro clearfix" style="display: none">
+
+								<img src="../image/cal-2.png" class="fl">
+								<i class="f1 f18 col555">暂无数据</i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="wrapper mt20 cal-4box">
+				<div class="clearfix cal-4 f18 col555 bold tac">
+					<span class="profit " onclick="getAccountLog(true)" id="accountLog">账变记录<i></i><em></em></span>
+					<span class="profit " onclick="getBtcLog(true)" id="btcLog">比特币账变<i></i><em></em></span>
+					<span class="profit " onclick="myMining(true)" id="myMining">我的算力<i></i><em></em></span>
+					<span class="profit " onclick="findEleBuyLog(true)" id="eleBuyLog">购买电量查询<i></i><em></em></span>
+					<span class="profit " onclick="findEleExpend(true)" id="eleExpend">电量消耗查询<i></i><em></em></span>
+					<span class="profit " onclick="findBtbEarn(true)" id="btbEarn">比特币收益查询<i></i><em></em></span>
+				</div>
+				<div class="cal-4mn bakfff orderUrl" style="display: block;">
+					<!--有数据-->
+					<div class="">
+						<table class="order-rectb tac f16">
+							<tbody id="list">
+
+
+							</tbody>
+						</table>
+						<div class="listmore tac" id="more" style="display: none"><a href="javascript:void(0);" onclick="getMore()">查看更多</a></div>
+						<div class="clearfix cal-page mt30">
+							<p class="fr">
+
+							</p>
+						</div>
+					</div>
+				</div>
+				<!--收益记录-->
+				<div class="cal-4mn bakfff profitUrl" style="display: none;">
+					<!--没数据-->
+					<div class="cal-norec clearfix">
+						<img src="../image/cal-3.png" class="fl">
+						<span class="f18 col555 fr">暂无数据，请前往<a href="/index/s9.html" class="cole85514">购买产品。</a></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--提现-->
+		<style>
+			.tankuang{position:fixed;width:500px;height:300px;top:50%;margin-top:-150px;left:50%;margin-left:-250px;background:#fff;z-index: 9999;    padding-top: 30px;
+				box-sizing: border-box;}
+			.tankuang1st{position:fixed;width:500px;height:400px;top:50%;margin-top:-200px;left:50%;margin-left:-250px;background:#fff;z-index: 9999;    padding-top: 30px;
+				box-sizing: border-box;}
+			.tankuang>h3{text-align: center;font-size:18px;margin-bottom: 10px;	}
+			.tankuang>.detail{width:80%;margin-left:10%;}
+			.tankuang>.detail>p{width:100%;height: 40px;line-height: 40px;}
+			.tankuang>.detail>div{width:100%;height:40px;line-height: 40px;}
+			.tankuang>.detail{width:80%;margin-left:10%; }
+			.tankuang>.detail>div>input{width:70%;outline: none;height:32px;border:1px solid #ccc;padding-left:10px;margin-top:4px;}
+			.tankuang>.detail>div>.inp{width:40%;}
+			.tankuang>.detail>div>.huoqu{font-size:14px;color:#00a0e9;}
+			.tankuang>.detail>div>.huoqu-one{font-size:14px;color:#666;}
+			.tankuang>.tan-detail{width:80%;margin-left:10%;}
+			.tankuang>.tan-detail>h3{width:100%;float: left;height:40px;line-height: 40px;}
+			.tankuang>.tan-detail>h3>span{font-size:22px;}
+			.tankuang>.tan-detail>h3>span:last-child{color:#ff0000;}
+			.tankuang>.tan-detail>p{width:50%;float: left;height:40px;line-height: 40px;}
+			.tankuang>.tan-detail>div{width:100%;float: left;height:40px;line-height: 40px;margin-bottom:40px;}
+			.tankuang>.tan-detail>div>input{width:70%;outline: none;height:32px;border:1px solid #ccc;padding-left:10px;margin-top:4px;}
+			.tankuang>.tan-but{width:80%;margin-left:10%;text-align: center;}
+			.tankuang>.tan-but>.tan-hide{width: 136px;line-height: 43px;border-radius: 5px;cursor:pointer;border: 1px solid #e85514;display: inline-block;margin: 0 12px;text-align: center;color:#e85514 !important;font-size:20px;}
+			.tankuang>.tan-but>.tan-show{width: 136px;line-height: 43px;border-radius: 5px;cursor:pointer;border: 1px solid #e85514;display: inline-block;margin: 0 12px;text-align: center;color:#fff !important;font-size:20px;background:#e85514;}
+		</style>
+		<div class="pop-pro-by disnone" id="tixian"></div>
+		<div class="tankuang tankuang1st disnone" id="tixian2">
+			<h3>BTC转余额</h3>
+			<div class="detail">
+				<p><span>　　账号:</span>&nbsp;&nbsp;&nbsp;<span id="userName"></span></p>
+				<p><span>　手机号:</span>&nbsp;&nbsp;&nbsp;<span id="mobile2"></span></p>
+				<div><span>比特币数量:</span>&nbsp;&nbsp;&nbsp;<input type="text" placeholder="请输入比特币数量" onKeyUp="amount(this)" id="num" onchange="verifyAccount()"></div>
+				<div><span>可转换余额:</span>&nbsp;&nbsp;&nbsp;<input type="text" readonly id="account" placeholder="可转换余额"></div>
+				<div><span>转换手续费:</span>&nbsp;&nbsp;&nbsp;<input type="text" readonly id="shouxu" placeholder="手续费"></div>
+				<div style="margin-bottom:40px;"><span>输入验证码:</span>&nbsp;&nbsp;&nbsp;<input type="text" placeholder="请输入验证码" class="inp" id="code">&nbsp;&nbsp;<span class="huoqu " id="getBuyVerifyCode" style="cursor: pointer;">获取</span></div>
+			</div>
+			<div class="tan-but">
+				<a class="tan-hide" onclick="closeTiXian()">取 消</a>
+				<a class="tan-show" onclick="btcTiXian()">确认转换</a>
+			</div>
+		</div>
+
+		<!--二维码-->
+		<div id="erwei" class="disnone" onclick="hidePhoto()">
+		<div class="pop-pro-by  "  ></div>
+		<div class="tankuang "  style="width: 350px; height:400px;">
+			<div class="tan-detail" style="width:300px;height: 300px;margin-left:25px;">
+				<img id="photo" src="" alt="" style="width:300px;height: 300px;margin:0 auto;">
+			</div>
+			<p style="text-align: center;color:#000;margin-top:20px;">扫描二维码,下载APP</p>
+		</div>
+		</div>
+		<!--充电-->
+		<div class="pop-pro-by disnone" id="power"></div>
+		<div class="tankuang disnone" id="power2">
+			<h3>购买电量</h3>
+			<div class="tan-detail">
+				<h3><span>电价:</span><span id="powerMoney"></span></h3>
+				<p><span>当前电量: &nbsp;</span><span id="userPower"></span></p>
+				<p><span>当前余额: &nbsp;</span><span id="money2"></span></p>
+				<div><span>充值电量: </span>&nbsp;&nbsp;&nbsp;<input type="text" placeholder="请输入购买电量" id="powerNum"></div>
+			</div>
+			<div class="tan-but">
+				<a class="tan-hide" onclick="closePower()">取 消</a>
+				<a class="tan-show" onclick="buyPower()">购 买</a>
+			</div>
+		</div>
+
+		<div class="home-bottom">
+			<div class="bottom-detail">
+				<ul class="bottom-detail-one">
+					<h3>深圳锦晖区块链科技有限公司</h3>
+					<li><span>服务热线：</span><span>400-809-3628</span></li>
+					<li><span>QQ号：</span><span>2532341578</span></li>
+					<li><span>地址：</span><span>深圳市福田区滨河大道22号联合广场A座1812</span></li>
+				</ul>
+				<ul class="bottom-detail-two">
+					<h3><a href="index.html">首页</a>|<a href="hashrate.html">算力</a>|<a href="pool.html">矿池</a>|<a href="message.html">资讯</a>|<a href="service.html">服务</a>|<a href="about.html">关于</a></h3>
+					<li><span>浙公网安备 33010402000402</span>&nbsp;&nbsp;&nbsp;<span>©浙ICP备15042144号-1</span></li>
+					<li><span>版权所有©深圳锦晖区块链科技有限公司</span></li>
+					<li><span>Copyright Shenzhen jinhui block link technology co. LTD</span></li>
+				</ul>
+				<div class="bottom-detail-three">
+					<div><img src="../image/weixintupian.jpg"/></div>
+					<span>微信 扫一扫</span>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script type="text/html" id="tpl_accountLog">
+		{{if list.pageNo == 1}}
+		<tr>
+			<th width="120">订单编号</th>
+			<th width="200">账变金额</th>
+			<th width="120">消费账户</th>
+			<th>备注</th>
+			<th width="190">日期</th>
+		</tr>
+		{{/if}}
+		{{each list.list}}
+		<tr>
+			<td>{{$value.id}}</td>
+			<td>{{$value.changeMoney}}</td>
+			<td>{{$value.moneyType == 1?'余额':$value.moneyType == 6?'电量':'BTC'}}账户</td>
+			{{if $value.changeType == 12}}
+			<td>算力电量消耗</td>
+			{{else if $value.changeType == 3}}
+			<td>扣除管理费</td>
+			{{else if $value.changeType == 1}}
+			<td>算力产出收益</td>
+			{{else}}
+			<td>{{$value.commt}}</td>
+			{{/if}}
+			<td>{{$value.createDate}}</td>
+		</tr>
+		{{/each}}
+	</script>
+	<script type="text/html" id="tpl_miningList">
+		{{if list.pageNo == 1}}
+			<tr>
+				<th>算力名称</th>
+				<th>拥有算力</th>
+				<th>耗电量</th>
+				<!--<th width="220">备注</th>-->
+				<th>算力开始日期</th>
+			</tr>
+		{{/if}}
+		{{each list.list}}
+		<tr>
+			<td>{{$value.miningMachine.name}}</td>
+			<td>{{$value.hashrate}}</td>
+			<td>{{$value.hashrate*$value.miningMachine.powerExpend , 2 | numberFormat}}</td>
+			<!--<td>{{$value.commt}}</td>-->
+			<td>{{$value.miningMachine.startDate | dateFormat}}</td>
+		</tr>
+		{{/each}}
+	</script>
+
+
+	<script type="text/javascript">
+		var buyFlag = false;
+		var type;
+		var logPageNo = 0;
+		var pageSize = 5;
+		var btcPageNo = 0;
+		var btcEarnNo = 0;
+        var eleExpendNo = 0;
+        var eleNo = 0;
+		var miningNo = 0;
+        var nums = 60;
+        var clock = '';
+        var userMobile;
+        var userMoney6;
+        var btcPrice;
+        var changeCost;
+        var photoSrc;
+        //框架初始化
+        qySoftInit("../../static/qyScript/web/");
+
+        layui.use(['qyWin','qyForm','layer','template'], initpage);
+        function initpage(){
+            verfLogin();
+            getBtcNowPrice();
+            getSharePhoto();
+            layui.qyForm.qyajax("/f/isLogin", {}, function (data) {
+                if (!data.isLogin) {
+                    layui.qyWin.win("", "hashrate.html", "");
+                    return;
+                }
+                qiehuan(10);
+                userInfo();
+                changeBank();
+				getAccountLog(true);
+
+            },function (ret) {
+                layui.qyWin.win("", "hashrate.html", "");
+            });
+        }
+
+        function getSharePhoto() {
+            layui.qyForm.qyajax("/f/machine/getEwCode", {"keyWord":"share"}, function (data) {
+                $("#photo").attr("src",CONS_AJAX_URL+data.list[0].photo);
+            });
+
+        }
+        //获取最新价和二维码
+        function getBtcNowPrice() {
+            layui.qyForm.qyajax("/f/machine/getBtcNowPrice", {}, function (data) {
+				btcPrice = data.price;
+				changeCost = data.shouRecharge;
+                $("#shouxu").val(changeCost);
+			});
+
+        }
+
+        //限制输入金额
+        function amount(th){
+            var regStrs = [
+                ['^0(\\d+)$', '$1'], //禁止录入整数部分两位以上，但首位为0
+                ['[^\\d\\.]+$', ''], //禁止录入任何非数字和点
+                ['\\.(\\d?)\\.+', '.$1'], //禁止录入两个以上的点
+                ['^(\\d+\\.\\d{10}).+', '$1'] //禁止录入小数点后两位以上
+            ];
+            for(var i=0; i<regStrs.length; i++){
+                var reg = new RegExp(regStrs[i][0]);
+                th.value = th.value.replace(reg, regStrs[i][1]);
+            }
+        }
+
+        function downApp() {
+			$("#erwei").show();
+        }
+        function hidePhoto() {
+            $("#erwei").hide();
+        }
+
+        function userInfo() {
+            layui.qyForm.qyajax("/f/machine/userInfo", {}, function (data) {
+                $("#trueName").text(data.userInfo.trueName);
+                $("#userName").text(data.userInfo.userName + " (BTC账户: "+data.userInfo.money6+" )");
+                userMobile = data.userInfo.mobile;
+                $("#mobile").text(data.userInfo.mobile.substring(0,3)+"****"+data.userInfo.mobile.substring(8,11));
+                $("#mobile2").text(data.userInfo.mobile.substring(0,3)+"****"+data.userInfo.mobile.substring(8,11));
+                $("#money").text(data.userInfo.money +" 元");
+                $("#money2").text(data.userInfo.money +" 元");
+                $("#money6").text(data.userInfo.money6 + " BTC");
+                $("#money5").text(data.userInfo.money5 + " 度");
+                userMoney6 = data.userInfo.money6;
+                $("#userPower").text(data.userInfo.money5 + " 度");
+                $("#powerMoney").text(data.powerMoney);
+            });
+        }
+
+	    function getMore() {
+            $("#more").hide();
+			if(type == 1){
+				logPageNo++;
+                getAccountLog();
+			}else if(type == 2){
+                btcPageNo++;
+                getBtcLog();
+			}else if(type == 3){
+                miningNo ++;
+                myMining();
+            } else if(type == 4){
+                eleNo ++;
+                findEleBuyLog();
+            }else if(type == 5){
+                eleExpendNo ++;
+                findEleExpend();
+            }else if(type == 6){
+                btcEarnNo ++;
+                findBtbEarn();
+            }
+        }
+
+        function getAccountLog(clear) {
+            $(".current").removeClass("current");
+            $("#accountLog").addClass("current");
+			if(clear){
+                logPageNo = 1;
+                $("#list").html("");
+                $("#more").hide();
+			}
+            layui.qyForm.qyajax("/f/machine/getAccountLog", {pageNo:logPageNo,pageSize:pageSize,moneyTypeEnd:5}, function (data) {
+                type = 1;
+                if(data.list.count == 0){
+                    return;
+                }
+                if(Math.ceil(data.list.count/pageSize)==logPageNo){
+                    $("#more").hide();
+                }else{
+                    $("#more").show();
+                }
+				var html = template('tpl_accountLog',data);
+                $("#list").append(html);
+            });
+        }
+
+        function findBtbEarn(clear) {
+            $(".current").removeClass("current");
+            $("#btbEarn").addClass("current");
+            if(clear){
+                btcEarnNo = 1;
+                $("#list").html("");
+                $("#more").hide();
+            }
+            layui.qyForm.qyajax("/f/machine/findBtcEarn", {pageNo:btcEarnNo,pageSize:pageSize}, function (data) {
+                type = 6;
+                if(data.list.count == 0){
+                    return;
+                }
+                if(Math.ceil(data.list.count/pageSize)==btcEarnNo){
+                    $("#more").hide();
+                }else{
+                    $("#more").show();
+                }
+                var html = template('tpl_accountLog',data);
+                $("#list").append(html);
+            });
+        }
+
+
+		function qiehuan(day) {
+                $(".day").click(function(){
+                    $(".day").removeClass("tian-active");
+                    $(this).addClass("tian-active");
+                });
+
+            getEchartsData(day);
+        }
+
+
+        function findEleExpend(clear) {
+            $(".current").removeClass("current");
+            $("#eleExpend").addClass("current");
+
+            if(clear){
+                eleExpendNo = 1;
+                $("#list").html("");
+                $("#more").hide();
+            }
+            layui.qyForm.qyajax("/f/machine/groupByChangeAndMoneyType", {pageNo:eleExpendNo,pageSize:pageSize,changeType:12,moneyType:6}, function (data) {
+                type = 5;
+                if(data.list.count == 0){
+                    return;
+                }
+                if(Math.ceil(data.list.count/pageSize)==eleExpendNo){
+                    $("#more").hide();
+                }else{
+                    $("#more").show();
+                }
+                var html = template('tpl_accountLog',data);
+                $("#list").append(html);
+            });
+        }
+
+
+
+        function findEleBuyLog(clear) {
+            $(".current").removeClass("current");
+            $("#eleBuyLog").addClass("current");
+
+            if(clear){
+                eleNo = 1;
+                $("#list").html("");
+                $("#more").hide();
+            }
+            layui.qyForm.qyajax("/f/machine/getAccountLog", {pageNo:eleNo,pageSize:pageSize,changeType:4,moneyType:6}, function (data) {
+                type = 4;
+                if(data.list.count == 0){
+                    return;
+                }
+                if(Math.ceil(data.list.count/pageSize)==eleNo){
+                    $("#more").hide();
+                }else{
+                    $("#more").show();
+                }
+                var html = template('tpl_accountLog',data);
+                $("#list").append(html);
+            });
+        }
+
+		
+        function myMining(clear) {
+            $(".current").removeClass("current");
+            $("#myMining").addClass("current");
+
+            if(clear){
+                miningNo = 1;
+                $("#list").html("");
+                $("#more").hide();
+            }
+            layui.qyForm.qyajax("/f/machine/getMiningList", {pageNo:miningNo,pageSize:pageSize}, function (data) {
+                var html = template('tpl_miningList',data);
+                type = 3;
+                if(data.list.count == 0){
+                    return;
+                }
+                if(Math.ceil(data.list.count/pageSize)==miningNo){
+                    $("#more").hide();
+                }else{
+                    $("#more").show();
+                }
+                $("#list").append(html);
+            });
+        }
+        
+        function getBtcLog(clear) {
+            $(".current").removeClass("current");
+            $("#btcLog").addClass("current");
+            if(clear){
+                btcPageNo =1;
+                $("#list").html("");
+                $("#more").hide();
+            }
+            layui.qyForm.qyajax("/f/machine/groupByChangeAndMoneyTypeBtc", {pageNo:btcPageNo,pageSize:pageSize}, function (data) {
+                type = 2;
+                if(data.list.count == 0){
+					return;
+                }
+                if(Math.ceil(Math.ceil(data.list.count/pageSize))==btcPageNo){
+                    $("#more").hide();
+                }else{
+                    $("#more").show();
+                }
+
+                var html = template('tpl_accountLog',data);
+                $("#list").append(html);
+            });
+        }
+		
+        function changeBank() {
+            layui.qyForm.qyajax("/f/machine/changeBankInfo", {}, function (data) {
+                $("#kaihuBank").text(data.userChargeBank.commt);
+                $("#bankUserName").text(data.userChargeBank.userBankName);
+                $("#bankNum").text(data.userChargeBank.userBankNumber);
+                $("#message").text(data.userChargeBank.remarks);
+
+            });
+        }
+		
+        function verifyAccount() {
+            getBtcNowPrice();
+            var num = $("#num").val();
+            if (!/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(num)) {
+                layui.qyWin.toast('数量输入错误');
+                return;
+            }
+            layui.qyForm.qyajax("/f/machine/getBtcNowPrice", {}, function (data) {
+                $("#account").val((num*(1-changeCost)*data.price).toFixed(2)) ;
+                if($("#account").val() - data.btclow < 0){
+                    layui.qyWin.toast("最低转换额度为:"+data.btclow+"元");
+				}
+			});
+
+        }
+
+        function getBuyVerify() {
+
+           if ($("#mobile").val() == '' || $("#mobile").val() == 'undefined') {
+               layui.qyWin.toast("请填写手机号码!");
+               return ;
+           }
+
+            var param = {
+                mobile : userMobile,
+                isMobile:1
+            };
+
+            $('#getBuyVerifyCode').off('click');
+
+           layui.qyForm.qyajax("/msm/lkMsm/sendVerifyCode",param,function(data){
+            $("#getBuyVerifyCode").attr("disabled", true);
+            $("#getBuyVerifyCode").text(nums + '秒后可重新获取');
+            $("#getBuyVerifyCode").addClass('huoqu-one');
+            //一秒执行一次
+            clock = setInterval(doLoop, 1000);
+
+            });
+
+        }
+
+        function doLoop() {
+            nums--;
+            if (nums > 0) {
+                $("#getBuyVerifyCode").attr("disabled", true);
+                $("#getBuyVerifyCode").text(nums + '秒后可重新获取');
+            } else {
+                clearInterval(clock);
+                //清除js定时器
+                $("#getBuyVerifyCode").removeAttr("disabled");
+                $("#getBuyVerifyCode").text('获取');
+                $("#getBuyVerifyCode").removeClass('huoqu-one');
+                nums = 60;
+                //重置时间
+                $('#getBuyVerifyCode').on('click', function() {
+                    getBuyVerify();
+                });
+            }
+        }
+
+        function buyPower() {
+            var powerNum = $("#powerNum").val();
+            if (!/^[1-9][0-9]*$/.test(powerNum)) {
+                layui.qyWin.toast('购买数量必须是大于0的整数');
+                return;
+            }
+            if(buyFlag){
+                return;
+            }
+            buyFlag = true;
+            layui.qyForm.qyajax("/f/machine/buyPower", {powerNum:powerNum}, function (data) {
+                layui.qyWin.toast(data.info);
+                closePower();
+                $("#powerNum").val("");
+                setTimeout(function () {
+                    buyFlag = false;
+                    initpage();
+                },2500);
+            },function (error) {
+                buyFlag = false;
+            });
+
+        }
+		
+        function tanPower() {
+            $("#power").removeClass('disnone');
+            $("#power2").removeClass('disnone');
+        }
+        
+		function closePower() {
+            $("#power").addClass('disnone');
+            $("#power2").addClass('disnone');
+        }
+        
+        function btcTiXian() {
+            var code = $("#code").val();
+            var num = $("#num").val();
+
+            if($("#account").val()<=0){
+                layui.qyWin.toast("转换金额过低");
+                return;
+			}
+            if (!code) {
+                layui.qyWin.toast('请先填写验证码');
+                return;
+            }
+            if (!/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(num)) {
+                layui.qyWin.toast('数量输入错误');
+                return;
+            }
+            if(buyFlag){
+                return;
+            }
+            buyFlag = true;
+            layui.qyForm.qyajax("/f/machine/btcChangeRmb", {money:num,code:code}, function (data) {
+                layui.qyWin.toast(data.info);
+                $("#num").val(0);$("#code").val("");
+                closeTiXian();
+                $("#powerNum").val("");
+                setTimeout(function () {
+
+
+                    buyFlag = false;
+                    initpage();
+                },2500);
+            },function (error) {
+                buyFlag = false;
+            });
+
+        }
+
+        function tanTiXian() {
+            getBtcNowPrice();
+            $("#tixian").removeClass('disnone');
+            $("#tixian2").removeClass('disnone');
+        }
+
+        function closeTiXian() {
+            $("#tixian").addClass('disnone');
+            $("#tixian2").addClass('disnone');
+        }
+        
+        function loginOut() {
+            layui.qyForm.qyajax("/f/logOut", {}, function (data) {
+                layui.qyWin.toast(data.info);
+                setTimeout(function () {
+                    layui.qyWin.win("", "hashrate.html", "");
+                },1500)
+            });
+        }
+
+        function loginGo(url) {
+            layui.qyForm.qyajax("/f/isLogin", {}, function (data) {
+                if (data.isLogin) {
+                    layui.qyWin.win("", url + ".html", "");
+                } else {
+                    layui.qyWin.win("", "hashrate.html", "");
+                }
+            });
+        }
+
+        function getEchartsData(day) {
+            layui.qyForm.qyajax("/f/machine/getEchartsData", {"dayNum":day}, function (data) {
+				if(data.count == 0){
+				    $("#wu").show();
+				}else {
+                    $("#earnTab").show();
+				}
+
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main'));
+
+                // 指定图表的配置项和数据
+                var option = {
+                    title: {
+                        text: '算力收益走势图'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data:['10天','20天','30天']
+                    },
+                    xAxis:  {
+                        type: 'category',
+                        boundaryGap: false,
+						name:"日期",
+                        data: data.xData,
+                        axisLabel:{
+                            interval:0,//横轴信息全部显示
+                            rotate:-60,//-30度角倾斜显示
+                        }
+                    },
+                    yAxis: {},
+                    series: [{
+                        name: '收益',
+                        type: 'line',
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(255, 158, 68)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgb(255, 70, 131)'
+                                }])
+                            }
+                        },
+                        data: data.yData
+                    }]
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+            });
+        }
+
+
+
+	</script>
+
+</html>

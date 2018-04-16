@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>注册</title>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/aui/layer-mobile.css"/>
+</head>
+<body>
+<header class="aui-bar aui-bar-nav home">
+    <a class="aui-pull-left aui-btn back" href="#">
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a>
+    <div class="aui-title">注册</div>
+</header>
+<div class="height-one"></div>
+<div class="aui-content">
+    <ul class="aui-list aui-form-list regs_lst">
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    手&nbsp; 机&nbsp;号:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="mobile" placeholder="请输入真实手机号">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    真实姓名:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" id="trueName" placeholder="请输入真实姓名">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="password" id="pwdOne" placeholder="设置密码">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    确认密码:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="password" id="pwdTwo" placeholder="再次输入密码">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    验&nbsp; 证&nbsp;码:
+                </div>
+                <div class="aui-list-item-input" style="width:45%;">
+                    <input type="text" id="code" placeholder="请输入验证码" id="verifyCode">
+                </div>
+                <div class="aui-list-item-label" style="width:10rem;display: inline-block;">
+                    <div class="aui-btn btn_green aui-font-size-12 aui-pull-right" style="padding: 0 0.4rem;"
+                         id="getVerifyCode">发送验证码
+                    </div>
+                </div>
+            </div>
+
+        </li>
+    </ul>
+</div>
+<div class="aui-content">
+	 <div class="checkbox-custom checkbox-primary" style="padding:0.5rem 0;padding-left:0.75rem;background-color:#fff;">
+        <input type="checkbox" id="inputRadiosChecked" name="userDetail"  value="1" class="radio-custom radio-primary" checked>
+        <label for="inputRadiosChecked" style="font-size:0.7rem;">我已阅读<a href="javascript:void(0)" onclick="detail()" target="blank" style="position: relative;top: -2px;cursor: pointer;color: #445e6d; font-size:0.7rem;">《用户注册协议》</a></label>
+    </div>
+</div>
+<div class="blank_15"></div>
+<div class="aui-content register-but">
+    <div class="aui-btn aui-btn-block btn-login aui-margin-t-15" onclick="register()">注 册</div>
+</div>
+
+		<div class="aui-content gonggao-tan " style="display:none"  id="gonggaoTan">
+				<div class="gonggao-tan-detail">
+						<h3>注册协议<img src="../image/guanbi.png" onclick="gonggaoHide()"></h3>
+						<div class="gonggao-tan-detail-one">
+								<p id="detail"></p>
+						</div>
+				</div>
+		</div>
+
+</body>
+<script type="text/javascript">
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+    var powerMoney = 0;
+    var buyFlag = false;
+    var machineMoney;
+    var machineId;
+    var nums = 60;
+    var loginFlag = false;
+    //apicloud 准备完成
+
+    layui.use(['qyWin', 'qyForm', 'qyShop', 'template', 'layer'], initpage);
+
+
+    function initpage() {
+        $('#getVerifyCode').on('click', function () {
+            getVerify();
+        });
+
+    }
+
+
+    function register() {
+
+        var trueName = $("#trueName").val();
+        var parentName = "pt10001";
+        var mobile = $("#mobile").val();
+        var code = $("#code").val();
+        var pwdOne = $("#pwdOne").val();
+        var pwdTwo = $("#pwdTwo").val();
+        if (!trueName) {
+            layui.qyWin.toast("请输入真实姓名!");
+            return;
+        }
+        if(loginFlag){
+            return;
+        }
+        if (!mobile) {
+            layui.qyWin.toast("请输入手机号!");
+            return;
+        }
+        if (!(/^1[34578]\d{9}$/.test(mobile))) {
+            layui.qyWin.toast("手机号码有误，请重填");
+            return;
+        }
+        if(!$('#inputRadiosChecked').is(':checked')) {
+                layui.qyWin.toast('请先勾选注册协议');
+                return;
+            }
+        				if(!code){
+                           layui.qyWin.toast("请输入验证码!");
+                           return ;
+                       }
+        if (!pwdOne) {
+            layui.qyWin.toast("请输入密码!");
+            return;
+        }
+        if (pwdOne.length < 8) {
+            layui.qyWin.toast("密码长度必读大于八位!");
+            return;
+        }
+        if (pwdOne != pwdTwo) {
+            layui.qyWin.toast("请两次密码保持一致!");
+            return;
+        }
+        var data = {
+            trueName: trueName,
+            parentName: parentName,
+            mobile: mobile,
+            validCode: code,
+            walterName: "pt10001",
+            password: pwdTwo
+        }
+        loginFlag = true;
+        layui.qyForm.qyajax("/f/register", data, function (ret) {
+            layui.qyWin.toast(ret.info);
+            setTimeout(function () {
+                layui.qyWin.closeWin(true);
+            }, 2500);
+            loginFlag = false;
+        },function(error){
+            loginFlag = false;
+        });
+    }
+
+    function detail(){
+    	layui.qyForm.qyajax("/f/machine/transDetailByKeyword",{},function (data) {
+            $("#detail").html(data.agreement);
+            $("#gonggaoTan").show();
+        });
+    }
+
+    function gonggaoHide(){
+		$('#gonggaoTan').hide();
+	}
+
+    function doLoop() {
+        nums--;
+        if (nums > 0) {
+            $("#getVerifyCode").attr("disabled", true);
+            $("#getVerifyCode").text(nums + '秒后可重新获取');
+        } else {
+            clearInterval(clock);
+            //清除js定时器
+            $("#getVerifyCode").removeAttr("disabled");
+            $("#getVerifyCode").text('获取验证码');
+            nums = 60;
+            //重置时间
+
+            $('#getVerifyCode').on('click', function () {
+                getVerify();
+            });
+        }
+    }
+
+    function getVerify() {
+
+        if ($("#mobile").val() == '' || $("#mobile").val() == 'undefined') {
+            layui.qyWin.toast("请填写手机号码!");
+            return;
+        }
+
+        var param = {
+            mobile: $("#mobile").val(),
+            isMobile: 1
+        };
+
+        $('#getVerifyCode').off('click');
+
+        layui.qyForm.qyajax("/msm/lkMsm/sendVerifyCode", param, function (data) {
+            $("#getVerifyCode").attr("disabled", true);
+            $("#getVerifyCode").text(nums + '秒后可重新获取');
+
+            //一秒执行一次
+            clock = setInterval(doLoop, 1000);
+
+         });
+
+    }
+
+</script>
+</html>

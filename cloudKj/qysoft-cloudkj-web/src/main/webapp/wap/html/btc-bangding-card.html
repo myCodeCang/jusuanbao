@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>BTC账户添加</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui/aui.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/template/style.css"/>
+    <link rel="stylesheet" type="text/css" href="../script/layer/css/layer-mobile.css"/>
+    <script type="text/javascript" src="../../static/qyScript/web/layer/layui.js"></script>
+    <script type="text/javascript" src="../../static/qyScript/web/qyconfig.js"></script>
+</head>
+<body class="bg-fff">
+<header class="aui-bar aui-bar-nav home" id="title">
+    <a class="aui-pull-left aui-btn back" href="#">
+        <span class="aui-iconfont aui-icon-left"></span>
+    </a>
+    <div class="aui-title">绑定BTC账户</div>
+    <div class="aui-pull-right" onclick="save()">提交</div>
+</header>
+<div class="height-one"></div>
+<div class="aui-content aui-margin-b-15 ">
+    <ul class="aui-list aui-form-list">
+        <input type="hidden" id="userName">
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    持卡人姓名:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="请输入持卡人姓名" id="bankUserName" readonly="readonly">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    BTC&nbsp;&nbsp;账&nbsp;&nbsp;户:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="请输入账户号" id="bankUserNum">
+                </div>
+            </div>
+        </li>
+        <li class="aui-list-item">
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-label">
+                    确&nbsp;认&nbsp;账&nbsp;户:
+                </div>
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="请确认账户号" id="bankUserNum2">
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<!-- <div class="aui-content tieshi">
+    <h3>贴士：</h3>
+    <p>1.请确保绑定的银行卡与注册人的姓名以及银行预留的信息一致。</p>
+    <p>2.准确填写开户行名称将有利于加快汇款处理速度，保证款项顺利汇出。</p>
+    <p>3.请按下方格式填写开户行信息：（中国**银行**市**分行/支行/分理处）</p>
+    <p>4.开户行信息可拨打开户行客服电话进行查询。</p>
+</div> -->
+</body>
+<script type="text/javascript">
+    var saveFlag = false;
+    //框架初始化
+    qySoftInit("../../static/qyScript/web/");
+
+    //apicloud 准备完成
+    layui.use(['qyWin', 'qyForm', 'template', 'layer'], initpage);
+
+    function initpage() {
+        var qyWin = layui.qyWin;
+        loadData();
+
+    }
+
+    function loadData() {
+        layui.qyForm.qyajax("/f/app/userinfo/userinfo", {}, function (data) {
+            $("#bankUserName").val(data.userinfo.trueName);
+            $("#userName").val(data.userinfo.userName);
+        });
+
+    }
+
+    function save() {
+
+        var bankUserNum = $("#bankUserNum").val();
+        var bankUserNum2 = $("#bankUserNum2").val();
+        if (bankUserNum == "") {
+            layui.qyWin.toast("请将信息填写完整!");
+            return;
+        }
+        if (bankUserNum != bankUserNum2) {
+            layui.qyWin.toast("两次卡号输入不一致!");
+            return;
+        }
+        var data = {
+            bankAccount: bankUserNum,
+        }
+        layui.layer.open({
+            content: '您确定要绑定吗？'
+            , btn: ['确认', '取消']
+            , yes: function (index) {
+                if (saveFlag) {
+                    return;
+                }
+                saveFlag = true;
+                layui.qyForm.qyajax("/f/app/machine/updateUserBurse", data, function (res) {
+                    layui.qyWin.toast(res.info);
+                    setTimeout("layui.qyWin.closeWin(true)", 1000);
+                }, function () {
+                    saveFlag = false;
+                });
+                layui.layer.close(index);
+            }
+        });
+
+
+    }
+</script>
+</html>
